@@ -65,10 +65,7 @@ with engine.connect() as conn:
             titel VARCHAR(100) NOT NULL,
             korte_omschrijving TEXT,
             lange_omschrijving TEXT,
-            afbeelding TEXT,
-            FOREIGN KEY (keuken_id) REFERENCES keuken_type(id),
-            FOREIGN KEY (type_id) REFERENCES keuken_type(id),
-            FOREIGN KEY (user_id) REFERENCES user(id)
+            afbeelding TEXT
         );
     '''))
 
@@ -78,9 +75,7 @@ with engine.connect() as conn:
             id INT AUTO_INCREMENT PRIMARY KEY,
             gerecht_id INT NOT NULL,
             artikel_id INT NOT NULL,
-            aantal FLOAT NOT NULL,
-            FOREIGN KEY (gerecht_id) REFERENCES gerechten(id),
-            FOREIGN KEY (artikel_id) REFERENCES artikel(id)
+            aantal FLOAT NOT NULL
         );
     '''))
     
@@ -93,9 +88,7 @@ with engine.connect() as conn:
             user_id INT NOT NULL,
             datum DATE NOT NULL,
             nummeriekveld INT,
-            tekstveld TEXT,
-            FOREIGN KEY (gerecht_id) REFERENCES gerechten(id),
-            FOREIGN KEY (user_id) REFERENCES user(id)
+            tekstveld TEXT
         );
     '''))
 
