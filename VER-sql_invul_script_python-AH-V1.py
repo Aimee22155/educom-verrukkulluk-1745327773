@@ -21,13 +21,19 @@ try:
             INSERT INTO user (user_name, password, email, image)
             VALUES ('chef_tom', 'passwordoftom', 'tom@example.com', 'tom.jpg')
         """))
-        user_id = conn.execute(SA.text("SELECT LAST_INSERT_ID()")).scalar()
-        
+        user_id_tom = conn.execute(SA.text("SELECT LAST_INSERT_ID()")).scalar()
+
         conn.execute(SA.text(""" 
             INSERT INTO user (user_name, password, email, image)
             VALUES ('chef_anna', 'passwordofanna', 'anna@example.com', 'anna.jpg')
         """))
-        user_id = conn.execute(SA.text("SELECT LAST_INSERT_ID()")).scalar()
+        user_id_anna = conn.execute(SA.text("SELECT LAST_INSERT_ID()")).scalar()
+
+        conn.execute(SA.text(""" 
+            INSERT INTO user (user_name, password, email, image)
+            VALUES ('chef_klaas', 'passwordofklaas', 'klaas@example.com', 'klaas.jpg')
+        """))
+        user_id_klaas = conn.execute(SA.text("SELECT LAST_INSERT_ID()")).scalar()
 
         # === Add kitchen_type ===
         conn.execute(SA.text("INSERT INTO kitchen_type (record_type, description) VALUES ('K', 'Italian')"))
@@ -80,7 +86,7 @@ try:
             article_ids[name] = conn.execute(SA.text("SELECT LAST_INSERT_ID()")).scalar()
 
         # === Add dishes and ingredients ===
-        def add_dish(kitchen_id, type_id, title, short_description, long_description, image):
+        def add_dish(kitchen_id, type_id, user_id, title, short_description, long_description, image):
             conn.execute(SA.text("""
                 INSERT INTO dishes (kitchen_id, type_id, user_id, date_added, title, short_description, long_description, image)
                 VALUES (:kitchen_id, :type_id, :user_id, :date, :title, :short_description, :long_description, :image)
@@ -98,25 +104,25 @@ try:
 
         dish_ids = {}
         dish_ids['Spaghetti Bolognese'] = add_dish(
-            kitchen_id_italian, type_id_vegetarian,
+            kitchen_id_italian, type_id_vegetarian, user_id_tom,
             "Spaghetti Bolognese", "Vegetarian Italian pasta with minced sauce.",
             "Rich tomato sauce with vegetarian minced meat, onion, garlic, and herbs. Served with spaghetti.", "spaghetti.jpg"
         )
 
         dish_ids['Nachos'] = add_dish(
-            kitchen_id_mexican, type_id_meat,
+            kitchen_id_mexican, type_id_meat, user_id_anna,
             "Nachos", "Mexican oven dish with minced meat and cheese.",
             "Crispy nacho chips with seasoned minced meat, cheese, jalapeño, and fresh guacamole.", "nacho.jpg"
         )
 
         dish_ids['Lasagna'] = add_dish(
-            kitchen_id_italian, type_id_meat,
+            kitchen_id_italian, type_id_meat, user_id_klaas,
             "Lasagna", "Layers of pasta with sauce and cheese.",
             "Layers of pasta, bolognese sauce, and bechamel sauce with melted cheese on top.", "lasagna.jpg"
         )
 
         dish_ids['Sandwich with chocolate sprinkles'] = add_dish(
-            kitchen_id_dutch, type_id_vegan,
+            kitchen_id_dutch, type_id_vegan, user_id_anna,
             "Sandwich with chocolate sprinkles", "Sandwich with dark chocolate sprinkles.",
             "Whole wheat sandwich with plant-based butter and dark chocolate sprinkles.", "sandwich.jpg"
         )
@@ -159,20 +165,20 @@ try:
         conn.execute(SA.text(""" 
             INSERT INTO dish_info (record_type, dish_id, user_id, date, numberfield, textfield)
             VALUES 
-            ('O', :dish_id_1, :user_id_1, :date, 5, 'Record O with text and value.'),
-            ('B', :dish_id_2, :user_id_2, :date, 3, 'Record B with text and value.'),
-            ('W', :dish_id_3, :user_id_3, :date, 7, 'Record W with text and value.'),
-            ('F', :dish_id_4, :user_id_4, :date, 7, 'Record F with text and value.')
+            ('C', :dish_id_1, :user_id_1, :date, 5, 'Record C with text and value.'),
+            ('P', :dish_id_2, :user_id_2, :date, 3, 'Record P with text and value.'),
+            ('R', :dish_id_3, :user_id_3, :date, 7, 'Record R with text and value.'),
+            ('F', :dish_id_4, :user_id_2, :date, 7, 'Record F with text and value.')
         """), {
             "dish_id_1": dish_ids['Spaghetti Bolognese'],
-            "user_id_1": user_id,
-            "date": datetime.now(),
+            "user_id_1": user_id_tom,
             "dish_id_2": dish_ids['Nachos'],
-            "user_id_2": user_id,
+            "user_id_2": user_id_anna,
             "dish_id_3": dish_ids['Lasagna'],
-            "user_id_3": user_id,
+            "user_id_3": user_id_klaas,
             "dish_id_4": dish_ids['Sandwich with chocolate sprinkles'],
-            "user_id_4": user_id
+            "user_id_2": user_id_anna,
+            "date": datetime.now()
         })
 
         print("Sample data added to the 'dish_info' table!")

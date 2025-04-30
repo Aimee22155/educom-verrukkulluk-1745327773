@@ -83,7 +83,7 @@ with engine.connect() as conn:
     conn.execute(SA.text('''
         CREATE TABLE IF NOT EXISTS dish_info (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            record_type ENUM('O', 'B', 'W', 'F') NOT NULL,
+            record_type ENUM('C', 'P', 'R', 'F') NOT NULL,
             dish_id INT NOT NULL,
             user_id INT NOT NULL,
             date DATE NOT NULL,

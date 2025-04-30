@@ -1,29 +1,29 @@
 <?php
 
 require_once("lib/database.php");
-require_once("lib/artikel.php");
-require_once("lib/user.php");
-require_once("lib/keuken_type.php");
-require_once("lib/ingredient.php");
-require_once("lib/gerechten_info.php");
+require_once("lib/article.php");
+require_once("lib/user.php"); 
+require_once("lib/kitchen_type.php"); 
+require_once("lib/ingredient.php"); 
+require_once("lib/dish_info.php");
 
-/// INIT / objects
+// INIT: The following lines create objects for each class and pass the database connection to their constructors.
 $db = new database();
-$art = new artikel($db->getConnection());
-$user = new user($db->getConnection());
-$keuken_type = new keuken_type($db->getConnection());
-$ingredient_return= new ingredient($db->getConnection());
-$gerecht_info = new gerecht_info($db->getConnection());
+$Article = new article($db->getConnection()); 
+$User = new user($db->getConnection());
+$KitchenType = new KitchenType($db->getConnection());
+$Ingredient_return = new ingredient($db->getConnection());
+$DishInfo = new DishInfo($db->getConnection());
 
-/// VERWERK 
-$artikel = $art->selecteerArtikel(1);
-$user = $user->selecteerUser(1);
-$keuken_type = $keuken_type->selecteerKeuken_type(5);
-$ingredient_return = $ingredient_return->selecteerIngredient(1);
-$gerecht_info = $gerecht_info->selecteerGerecht_info(1);
+// VERWERK: The following lines call the `select` methods on the respective objects to fetch data from the database.
+$Article = $Article->selectArticle(1); 
+$User = $User->selectUser(1);
+$KitchenType = $KitchenType->selectKitchenType(5); 
+$Ingredient_return = $Ingredient_return->selectIngredient(1); 
+$DishInfo = $DishInfo->selectDishinfo(1); 
 
-/// RETURN
+// RETURN: Displays the data fetched from the database.
 echo "<pre>";
-var_dump($artikel, $user, $keuken_type, $ingredient_return, $gerecht_info);
+var_dump($Article, $User, $KitchenType, $Ingredient_return, $DishInfo); 
 
 
