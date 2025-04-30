@@ -1,0 +1,1 @@
+SELECT * FROM `gerecht_info` WHERE `record_type` = 'O' AND `gerecht_id` = 1
