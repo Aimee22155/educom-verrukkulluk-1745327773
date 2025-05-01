@@ -25,38 +25,39 @@ class DishInfo {
         return($dish_info);
     }
 
-    public function specificUsers() {
+    public function selectUsersC() {
         //haalt all users op die een commentaar hebben achtergelaten of een gerecht hebben toegevoegd aan hun favorieten.
-        $sql = "select user_id from dish_info where record_type = 'O' OR record_type = 'F'";
+        $sql = "select user_id, dish_id, record_type, textfield from dish_info 
+                where record_type = 'C' OR record_type = 'F' order by user_id";
         $result = mysqli_query($this->connection, $sql);
-        $users = [];
+        $UserC = [];
         //zet de opgehaalde users in een array
         while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-            $users[] = $row;
+            $UserC[] = $row;
         }
 
-        return $users;
+        return $UserC;
     }    
     
+    // Verwijder een favoriet
+    public function selectdeleteFavorite($dish_id, $user_id, $date) {
+        $sql = "delete from dish_info where record_type = 'F' AND dish_id = $dish_id AND user_id = $user_id AND date = $date";
+        $result = mysqli_query($this->connection, $sql);
+
+        return $result;
+    } 
+    
     // Voeg favoriet toe, maar verwijder eerst dezelfde als die al bestaat in favorietenlijst.
-    public function AddFavoriteIfNotExists($dish_id, $user_id) {
+    public function selectAddFavoriteIfNotExists($dish_id, $user_id, $date) {
         // Verwijder bestaande favoriet, indien aanwezig
-        $this->deleteFavorite($dish_id, $user_id);
+        $this->selectdeleteFavorite($dish_id, $user_id, $date);
 
         // Voeg favoriet toe
-        $sql = "insert into dish_info (dish_id, user_id, record_type) values ($dish_id, $user_id, 'F')";
+        $sql = "insert into dish_info (record_type, dish_id, user_id, date) values ('F', $dish_id, $user_id, $date)";
         $result = mysqli_query($this->connection, $sql);
 
         return $result;
-    }
-
-    // Verwijder een favoriet
-    public function deleteFavorite($dish_id, $user_id) {
-        $sql = "delete from dish_info where dish_id = $dish_id AND user_id = $user_id AND record_type = 'F'";
-        $result = mysqli_query($this->connection, $sql);
-
-        return $result;
-    }   
+    }  
     
 }
 

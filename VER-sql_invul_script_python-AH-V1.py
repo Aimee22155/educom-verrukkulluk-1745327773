@@ -165,10 +165,10 @@ try:
         conn.execute(SA.text(""" 
             INSERT INTO dish_info (record_type, dish_id, user_id, date, numberfield, textfield)
             VALUES 
-            ('C', :dish_id_1, :user_id_1, :date, 5, 'Record C with text and value.'),
-            ('P', :dish_id_2, :user_id_2, :date, 3, 'Record P with text and value.'),
-            ('R', :dish_id_3, :user_id_3, :date, 7, 'Record R with text and value.'),
-            ('F', :dish_id_4, :user_id_2, :date, 7, 'Record F with text and value.')
+            ('C', :dish_id_1, :user_id_1, :date, 0, 'Goed te volgen recept'),
+            ('P', :dish_id_2, :user_id_2, :date, 0, 'Kook een ruime hoeveelheid water in een grote pan '),
+            ('R', :dish_id_3, :user_id_3, :date, 3, '[3 sterren]'),
+            ('F', :dish_id_4, :user_id_2, :date, 0, '[toegevoegd/verwijderd van/uit favorieten]')
         """), {
             "dish_id_1": dish_ids['Spaghetti Bolognese'],
             "user_id_1": user_id_tom,

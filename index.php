@@ -7,23 +7,29 @@ require_once("lib/kitchen_type.php");
 require_once("lib/ingredient.php"); 
 require_once("lib/dish_info.php");
 
-// INIT: The following lines create objects for each class and pass the database connection to their constructors.
+// INIT
+//objectnaam (nu aangemaakt) + classnaam (zoals in '...'.php script)
+// roep hier de verschillende classes aan die je wilt gebruiken.
 $db = new database();
-$Article = new article($db->getConnection()); 
-$User = new user($db->getConnection());
-$KitchenType = new KitchenType($db->getConnection());
-$Ingredient_return = new ingredient($db->getConnection());
-$DishInfo = new DishInfo($db->getConnection());
+$articleObj = new Article($db->getConnection()); 
+$userObj = new User($db->getConnection());
+$kitchenTypeObj = new KitchenType($db->getConnection());
+$ingredientObj = new Ingredient($db->getConnection());
+$dishInfoObj = new DishInfo($db->getConnection());
 
-// VERWERK: The following lines call the `select` methods on the respective objects to fetch data from the database.
-$Article = $Article->selectArticle(1); 
-$User = $User->selectUser(1);
-$KitchenType = $KitchenType->selectKitchenType(5); 
-$Ingredient_return = $Ingredient_return->selectIngredient(1); 
-$DishInfo = $DishInfo->selectDishinfo(1); 
+// VERWERK
+// datanaam (nu aangemaakt) + objectnaam (zoals hierboven genoemd).
+// roep hier de verschillende functies aan die je wilt gebruiken.
+$articleData = $articleObj->selectArticle(1); 
+$userData = $userObj->selectUser(1);
+$kitchenTypeData = $kitchenTypeObj->selectKitchenType(5); 
+$ingredientData = $ingredientObj->selectIngredient(1); 
+$dishInfoData = $dishInfoObj->selectDishInfo(1);
+$usersCData = $dishInfoObj->selectUsersC();
+$addFavoriteResult = $dishInfoObj->selectAddFavoriteIfNotExists(1, 2, 3);
+$deleteFavoriteResult = $dishInfoObj->selectdeleteFavorite(1, 2, 3);
 
-// RETURN: Displays the data fetched from the database.
+// RETURN
+// roept datanaam aan (zoals hierboven genoemd) en geeft deze weer in een array.
 echo "<pre>";
-var_dump($Article, $User, $KitchenType, $Ingredient_return, $DishInfo); 
-
-
+var_dump($articleData, $userData, $kitchenTypeData, $ingredientData, $dishInfoData, $usersCData, $addFavoriteResult, $deleteFavoriteResult);

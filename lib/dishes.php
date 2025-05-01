@@ -5,24 +5,24 @@ class Dishes {
     
     private $connection;
     //kitchen and type seperate?
-    private $ingredient;
-    private $price;
-    private $calories;
-    private $preparation_method;
-    private $comments;
-    private $rating;
-    private $favorites;
+    private $Ingredient;
+    private $Price;
+    private $Calories;
+    private $Preparation_method;
+    private $Comments;
+    private $Rating;
+    private $Favorites;
 
     //methods
     public function __construct($connection) {
         $this->connection = $connection;
-        $this->ingredient = new ingredient($connection);
-        $this->price = new price($connection);
-        $this->calories = new calories($connection);
-        $this->preparation_method = new preparation_method($connection);
-        $this->comments = new comments($connection);
-        $this->rating = new rating($connection);
-        $this->favorites = new favorites($connection);
+        $this->Ingredient = new ingredient($connection);
+        $this->Price = new price($connection);
+        $this->Calories = new calories($connection);
+        $this->Preparation_method = new preparation_method($connection);
+        $this->Comments = new comments($connection);
+        $this->Rating = new rating($connection);
+        $this->Favorites = new favorites($connection);
     }
   
     //private function
@@ -30,6 +30,7 @@ class Dishes {
         $ingredient = $this->ingredient->selectIngredient($ingredient_id);
         return($ingredient);
     }
+
     
     public function selectDishes($dishes_id) {
         $sql = "SELECT * FROM dishes WHERE dishes_id = dishes_id";
@@ -38,6 +39,15 @@ class Dishes {
 
         return [];
     }
+
+
+
+
+
+
+
+
+    
     
     // Add methods for selectUser, selectKitchen, selectType, calcCalories, calcPrice, 
     // selectRating, selectSteps, selectRemarks, determineFavorite.

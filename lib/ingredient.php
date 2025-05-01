@@ -21,7 +21,7 @@ class Ingredient {
         $sql = "select * from ingredient where id = $dish_id";
         $result = mysqli_query($this->connection, $sql);
         // lege aray voor tegen foutmelding null waarden.
-        $IngredientReturn=[];
+        $Ingredient_return=[];
 
         // Gecreeërde array verplaatsen in "$row". 
         // Loops erdoor en maakt nieuwe array aan (loops door zolang mysqli_fetch_array kan worden uitgevoerd,
@@ -35,7 +35,7 @@ class Ingredient {
             $art_ing = $this->selectArticle($article_id);
         
             // maak nieuwe array aan en specificeer de velden.
-            $IngredientReturn[] = [
+            $Ingredient_return[] = [
                 "id" => $row["id"],
                 "dish_id" => $row["dish_id"],
                 "article_id" => $article_id,
@@ -43,7 +43,7 @@ class Ingredient {
                 "description" => $art_ing["description"],
             ];
         }
-        return($IngredientReturn);
+        return($Ingredient_return);
     }
     
 }
