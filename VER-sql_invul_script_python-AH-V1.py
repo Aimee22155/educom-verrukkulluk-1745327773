@@ -57,31 +57,32 @@ try:
         # === Add articles ===
         article_ids = {}
         articles = [
-            ('Spaghetti', 'Dried pasta', 'gram', 1.99, 'Bag 500g'),
-            ('Tomato sauce', 'Tomato sauce for pasta', 'ml', 2.49, 'Bottle 500ml'),
-            ('Vegetarian minced meat', 'Plant-based minced meat', 'gram', 3.99, 'Tray 250g'),
-            ('Onion', 'Yellow onion', 'piece', 0.25, 'Loose'),
-            ('Garlic', 'Clove of garlic', 'piece', 0.10, 'Loose'),
-            ('Herb mix', 'Italian herbs', 'teaspoon', 0.05, 'Bottle 50g'),
-            ('Nacho chips', 'Tortilla chips', 'bag', 1.49, 'Bag 200g'),
-            ('Minced meat', 'Beef minced meat', 'gram', 2.99, 'Tray 250g'),
-            ('Cheese', 'Grated cheese', 'gram', 1.59, 'Bag 150g'),
-            ('Lasagna sheets', 'Pasta for lasagna', 'gram', 1.49, 'Box 250g'),
-            ('Bechamel sauce', 'White sauce', 'ml', 1.89, 'Bottle 200ml'),
-            ('Bread', 'Whole wheat sandwich', 'slice', 0.20, 'Loose'),
-            ('Chocolate sprinkles', 'Dark chocolate sprinkles', 'gram', 0.05, 'Box 200g'),
-            ('Butter', 'Plant-based margarine', 'gram', 0.30, 'Piece 25g'),
+            ('Spaghetti', 'Dried pasta', 'gram', 1.99, '500', 710),
+            ('Tomato sauce', 'Tomato sauce for pasta', 'ml', 2.49, '500', 100),
+            ('Vegetarian minced meat', 'Plant-based minced meat', 'gram', 3.99, '250', 250),
+            ('Onion', 'Yellow onion', 'piece', 3.25, '6', 40),
+            ('Garlic', 'Clove of garlic', 'piece', 2.10, '6', 4),
+            ('Herb mix', 'Italian herbs', 'teaspoon', 0.05, '50', 150),
+            ('Nacho chips', 'Tortilla chips', 'bag', 1.49, '200', 1000),
+            ('Minced meat', 'Beef minced meat', 'gram', 2.99, '250', 250),
+            ('Cheese', 'Grated cheese', 'gram', 1.59, '150', 600),
+            ('Lasagna sheets', 'Pasta for lasagna', 'gram', 1.49, '250', 850),
+            ('Bechamel sauce', 'White sauce', 'ml', 1.89, '200', 200),
+            ('Bread', 'Whole wheat sandwich', 'slice', 4.20, '10', 80),
+            ('Chocolate sprinkles', 'Dark chocolate sprinkles', 'gram', 2.50, '200', 1040),
+            ('Butter', 'Plant-based margarine', 'gram', 3.30, '250', 180),
         ]
-        for name, description, unit, price, pack in articles:
+        for name, description, unit, price, pack, calories in articles:
             conn.execute(SA.text(""" 
-                INSERT INTO article (name, description, unit, price, packaging)
-                VALUES (:name, :description, :unit, :price, :packaging)
+                INSERT INTO article (name, description, unit, price, packaging, calories)
+                VALUES (:name, :description, :unit, :price, :packaging, :calories)
             """), {
                 "name": name,
                 "description": description,
                 "unit": unit,
                 "price": price,
-                "packaging": pack
+                "packaging": pack,
+                "calories": calories
             })
             article_ids[name] = conn.execute(SA.text("SELECT LAST_INSERT_ID()")).scalar()
 
@@ -144,7 +145,11 @@ try:
 
         add_ingredients('Nachos', [
             ('Nacho chips', 1),
-            ('Tomato sauce', 100)
+            ('Tomato sauce', 100),
+            ('Minced meat', 150),
+            ('Cheese', 100),
+            ('Onion', 1),
+            ('Garlic', 2)
         ])
 
         add_ingredients('Lasagna', [
@@ -165,10 +170,14 @@ try:
         conn.execute(SA.text(""" 
             INSERT INTO dish_info (record_type, dish_id, user_id, date, numberfield, textfield)
             VALUES 
-            ('C', :dish_id_1, :user_id_1, :date, 0, 'Goed te volgen recept'),
-            ('P', :dish_id_2, :user_id_2, :date, 0, 'Kook een ruime hoeveelheid water in een grote pan '),
+            ('C', :dish_id_1, :user_id_1, :date, NULL, 'Goed te volgen recept'),
+            ('C', :dish_id_1, :user_id_2, :date, NULL, 'Dit gerecht was makkelijk te bereiden!'),
+            ('P', :dish_id_2, NULL, :date, 1, 'Verwarm de oven voor op 200 graden Celsius'),
+            ('P', :dish_id_2, NULL, :date, 2, 'Kook een ruime hoeveelheid water in een grote pan'),
             ('R', :dish_id_3, :user_id_3, :date, 3, '[3 sterren]'),
-            ('F', :dish_id_4, :user_id_2, :date, 0, '[toegevoegd/verwijderd van/uit favorieten]')
+            ('F', :dish_id_4, :user_id_2, :date, NULL, '[toegevoegd/verwijderd van/uit favorieten]'),
+            ('C', :dish_id_3, :user_id_3, :date, NULL, 'Good lasagne! The preparation steps where a little unclear, but the result was delicious!'),
+            ('P', :dish_id_1, NULL, :date, 1, 'Breng een ruime hoeveelheid water aan de kook in een grote pan')
         """), {
             "dish_id_1": dish_ids['Spaghetti Bolognese'],
             "user_id_1": user_id_tom,
@@ -177,7 +186,7 @@ try:
             "dish_id_3": dish_ids['Lasagna'],
             "user_id_3": user_id_klaas,
             "dish_id_4": dish_ids['Sandwich with chocolate sprinkles'],
-            "user_id_2": user_id_anna,
+            "user_id_4": user_id_anna,
             "date": datetime.now()
         })
 

@@ -50,7 +50,8 @@ with engine.connect() as conn:
             description TEXT,
             unit VARCHAR(50),
             price DECIMAL(10,2) NOT NULL,
-            packaging VARCHAR(100)
+            packaging VARCHAR(100),
+            calories INT
         );
     '''))
 
@@ -85,7 +86,7 @@ with engine.connect() as conn:
             id INT AUTO_INCREMENT PRIMARY KEY,
             record_type ENUM('C', 'P', 'R', 'F') NOT NULL,
             dish_id INT NOT NULL,
-            user_id INT NOT NULL,
+            user_id INT,
             date DATE NOT NULL,
             numberfield INT,
             textfield TEXT

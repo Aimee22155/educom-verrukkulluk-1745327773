@@ -2,34 +2,55 @@
 
 require_once("lib/database.php");
 require_once("lib/article.php");
-require_once("lib/user.php"); 
-require_once("lib/kitchen_type.php"); 
-require_once("lib/ingredient.php"); 
+require_once("lib/user.php");
+require_once("lib/kitchen_type.php");
+require_once("lib/ingredient.php");
 require_once("lib/dish_info.php");
+require_once("lib/dishes.php");
 
-// INIT
-//objectnaam (nu aangemaakt) + classnaam (zoals in '...'.php script)
-// roep hier de verschillende classes aan die je wilt gebruiken.
+// === INIT ===
+// Initialize the database connection
 $db = new database();
-$articleObj = new Article($db->getConnection()); 
-$userObj = new User($db->getConnection());
-$kitchenTypeObj = new KitchenType($db->getConnection());
-$ingredientObj = new Ingredient($db->getConnection());
-$dishInfoObj = new DishInfo($db->getConnection());
+$connection = $db->getConnection();
 
-// VERWERK
-// datanaam (nu aangemaakt) + objectnaam (zoals hierboven genoemd).
-// roep hier de verschillende functies aan die je wilt gebruiken.
-$articleData = $articleObj->selectArticle(1); 
+// Initialize objects for the required classes
+$articleObj = new Article($connection);
+$userObj = new User($connection);
+$kitchenTypeObj = new KitchenType($connection);
+$ingredientObj = new Ingredient($connection);
+$dishInfoObj = new DishInfo($connection);
+$dishesObj = new Dishes($connection);
+
+// === VERWERK ===
+// Example: Fetch full dish data for a specific dish, user, and kitchen type
+$dish_id = 1; // Example dish ID
+$user_id = 1; // Example user ID
+$kitchen_type_id = 1; // Example kitchen type ID
+
+// Fetch full dish data
+$selectRecipe = $dishesObj->selectRecipe($dish_id, $user_id, $kitchen_type_id);
+
+// Fetch other data using existing objects
+$articleData = $articleObj->selectArticle(1);
 $userData = $userObj->selectUser(1);
-$kitchenTypeData = $kitchenTypeObj->selectKitchenType(5); 
-$ingredientData = $ingredientObj->selectIngredient(1); 
-$dishInfoData = $dishInfoObj->selectDishInfo(1);
-$usersCData = $dishInfoObj->selectUsersC();
-$addFavoriteResult = $dishInfoObj->selectAddFavoriteIfNotExists(1, 2, 3);
-$deleteFavoriteResult = $dishInfoObj->selectdeleteFavorite(1, 2, 3);
+$kitchenTypeData = $kitchenTypeObj->selectKitchenType(5);
+$ingredientData = $ingredientObj->selectIngredient(1);
+$dishInfoData = $dishInfoObj->selectDishInfo(2);
+$addFavoriteResult = $dishInfoObj->AddFavoriteIfNotExists(1, 2, 3);
+$deleteFavoriteResult = $dishInfoObj->deleteFavorite(1, 2, 3);
 
-// RETURN
-// roept datanaam aan (zoals hierboven genoemd) en geeft deze weer in een array.
+// === OUTPUT ===
+// Display the fetched data
 echo "<pre>";
-var_dump($articleData, $userData, $kitchenTypeData, $ingredientData, $dishInfoData, $usersCData, $addFavoriteResult, $deleteFavoriteResult);
+// var_dump($articleData, 
+//         $userData, 
+//         $kitchenTypeData, 
+//         $ingredientData, 
+//         $dishInfoData, 
+//         $addFavoriteResult, 
+//         $deleteFavoriteResult);
+print_r($selectRecipe);
+echo "</pre>";
+
+
+
