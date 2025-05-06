@@ -6,7 +6,7 @@ require_once("lib/user.php");
 require_once("lib/kitchen_type.php");
 require_once("lib/ingredient.php");
 require_once("lib/dish_info.php");
-require_once("lib/dishes.php");
+require_once("lib/dishes_V2.php");
 
 // === INIT ===
 // Initialize the database connection
@@ -22,29 +22,26 @@ $dishInfoObj = new DishInfo($connection);
 $dishesObj = new Dishes($connection);
 
 // === VERWERK ===
-// Example: Fetch full dish data for a specific dish, user, and kitchen type
 $dish_id = 1; // Example dish ID
-$user_id = 1; // Example user ID
-$kitchen_type_id = 1; // Example kitchen type ID
 
-// Fetch full dish data
-$selectRecipe = $dishesObj->selectRecipe($dish_id, $user_id, $kitchen_type_id);
+// Fetch data
+$selectRecipe = $dishesObj->selectRecipe($dish_id);
 
-// Fetch other data using existing objects
 $articleData = $articleObj->selectArticle(1);
 $userData = $userObj->selectUser(1);
 $kitchenTypeData = $kitchenTypeObj->selectKitchenType(5);
 $ingredientData = $ingredientObj->selectIngredient(1);
-$dishInfoData = $dishInfoObj->selectDishInfo(2);
+$dishInfoData = $dishInfoObj->selectDishInfo(1, 2);
 $addFavoriteResult = $dishInfoObj->AddFavoriteIfNotExists(1, 2, 3);
 $deleteFavoriteResult = $dishInfoObj->deleteFavorite(1, 2, 3);
 
 // === OUTPUT ===
 // Display the fetched data
 echo "<pre>";
-// var_dump($articleData, 
+// var_dump(
+//         $articleData, 
 //         $userData, 
-//         $kitchenTypeData, 
+//         $kitchenTypeData,
 //         $ingredientData, 
 //         $dishInfoData, 
 //         $addFavoriteResult, 

@@ -8,7 +8,7 @@ class Ingredient {
     //methods
     public function __construct($connection) {
         $this->connection = $connection;
-        $this->article = new article($connection);
+        $this->article = new Article($connection);
     }
   
     private function selectArticle($article_id) {
@@ -18,10 +18,10 @@ class Ingredient {
 
     public function selectIngredient($dish_id) {
         //selecteer alle ingredientvelden die behoren tot een specifiek gerecht.
-        $sql = "select * from ingredient where id = $dish_id";
+        $sql = "select * from ingredient where dish_id = $dish_id";
         $result = mysqli_query($this->connection, $sql);
         // lege aray voor tegen foutmelding null waarden.
-        $Ingredient_return=[];
+        $Ingredient=[];
 
         // Gecreeërde array verplaatsen in "$row". 
         // Loops erdoor en maakt nieuwe array aan (loops door zolang mysqli_fetch_array kan worden uitgevoerd,
@@ -35,15 +35,19 @@ class Ingredient {
             $art_ing = $this->selectArticle($article_id);
         
             // maak nieuwe array aan en specificeer de velden.
-            $Ingredient_return[] = [
+            $Ingredient[] = [
                 "id" => $row["id"],
                 "dish_id" => $row["dish_id"],
                 "article_id" => $article_id,
                 "name" => $art_ing["name"],
                 "description" => $art_ing["description"],
+                "unit" => $art_ing["unit"],
+                "price" => $art_ing["price"],
+                "packaging" => $art_ing["packaging"],
+                "calories" => $art_ing["calories"],
             ];
         }
-        return($Ingredient_return);
+        return($Ingredient);
     }
     
 }
