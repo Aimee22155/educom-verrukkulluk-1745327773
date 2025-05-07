@@ -6,7 +6,7 @@ require_once("lib/user.php");
 require_once("lib/kitchen_type.php");
 require_once("lib/ingredient.php");
 require_once("lib/dish_info.php");
-require_once("lib/dishes_V2.php");
+require_once("lib/dishes.php");
 
 // === INIT ===
 // Initialize the database connection
@@ -22,7 +22,7 @@ $dishInfoObj = new DishInfo($connection);
 $dishesObj = new Dishes($connection);
 
 // === VERWERK ===
-$dish_id = 1; // Example dish ID
+$dish_id = 4; // Example dish ID
 
 // Fetch data
 $selectRecipe = $dishesObj->selectRecipe($dish_id);

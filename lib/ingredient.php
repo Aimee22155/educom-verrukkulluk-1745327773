@@ -39,6 +39,7 @@ class Ingredient {
                 "id" => $row["id"],
                 "dish_id" => $row["dish_id"],
                 "article_id" => $article_id,
+                "quantity" => $row["quantity"],
                 "name" => $art_ing["name"],
                 "description" => $art_ing["description"],
                 "unit" => $art_ing["unit"],

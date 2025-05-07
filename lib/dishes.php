@@ -42,26 +42,38 @@ class Dishes {
         return ($ingredient);
     }
 
-    // ===checken===
-    // private function calcPrice($ingredients) {
-    //     $total = 0;
-    //     foreach($ingredients as $ingredient) {
-    //         if (isset($ingredient['price'])) {
-    //                     $total += $ingredient['price'];
-    //         }
-    //     }
+    private function calcPrice($ingredients) {
+        //start bij 0
+        $total = 0;
+        //loopt door de array met ingredienten die behoren tot het gerecht
+        foreach($ingredients as $ingredient) {
+            //controleert of de ingredienten een prijswaarde hebben (om fouten te voorkomen)
+            if (isset($ingredient['price'])) {
+                        //telt de prijzen bij elkaar op
+                        $total += $ingredient['price'];
+            }
+        }
+        //returnt het totale bedrag
+        return $total;
+    }
 
-    //     return $total;
-    // }
-
-    // private function calcPrice($ingredients) {
-    //     $total = 0;
-    //     foreach($ingredients as $ingredient) {
-    //         if ....
-    //         }
-    //     }
-
-    //     return $total;
+    private function calcCalo($ingredients) {
+        $total = 0;
+        foreach ($ingredients as $ingredient) {
+            if (
+                isset($ingredient['calories']) &&
+                isset($ingredient['packaging']) &&
+                isset($ingredient['quantity']) &&
+                $ingredient['packaging'] > 0
+            ) {
+                //Bereken de portie (hoeveelheid gebruikt t.o.v. verpakking)
+                $portion = $ingredient['quantity'] / $ingredient['packaging'];
+                //Bereken de calorieën voor dat ingrediënt en tel bijelkaar op
+                $total += $portion * $ingredient['calories'];
+            }
+        }
+        return $total;
+    }    
 
     //rating
     private function selectRating($dish_id) {
@@ -101,6 +113,8 @@ class Dishes {
         $kitchen = $this->selectKitchen($dish['kitchen_id']);
         $type = $this->selectType($dish['type_id']);
         $ingredients = $this->selectIngredient($dish['id']);
+        $price = $this->calcPrice($ingredients);
+        $calories = $this->calcCalo($ingredients);
         $rating = $this->selectRating($dish['id']);
         $preparationSteps = $this->selectPreparationSteps($dish['id']);
         $comments = $this->selectComments($dish['id']);
@@ -111,6 +125,8 @@ class Dishes {
         $dish['kitchen'] = $kitchen;
         $dish['type'] = $type;
         $dish['ingredients'] = $ingredients;
+        $dish['Price'] = $price;
+        $dish['calories'] = $calories;
         $dish['Rating'] = $rating;
         $dish['preparation_steps'] = $preparationSteps;
         $dish['comments'] = $comments;
