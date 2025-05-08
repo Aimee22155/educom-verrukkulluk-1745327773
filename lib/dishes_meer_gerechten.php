@@ -99,7 +99,7 @@ class Dishes {
         return $favorite;
     }
 
-    // === Public method === 
+    // === Public method ===
     public function selectRecipeOrMore($dish_ids = null) {
         //foutmelding indien geen dish_id
         if ($dish_ids === null) {
@@ -157,7 +157,5 @@ class Dishes {
             return $dishes;
         }
     }
-    
+
 }
-
-

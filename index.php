@@ -22,10 +22,10 @@ $dishInfoObj = new DishInfo($connection);
 $dishesObj = new Dishes($connection);
 
 // === VERWERK ===
-$dish_id = 4; // Example dish ID
+$dish_ids = [1,2]; // Example dish ID's
 
 // Fetch data
-$selectRecipe = $dishesObj->selectRecipe($dish_id);
+$selectRecipes = $dishesObj->selectRecipeOrMore($dish_ids);
 
 $articleData = $articleObj->selectArticle(1);
 $userData = $userObj->selectUser(1);
@@ -46,7 +46,7 @@ echo "<pre>";
 //         $dishInfoData, 
 //         $addFavoriteResult, 
 //         $deleteFavoriteResult);
-print_r($selectRecipe);
+print_r($selectRecipes);
 echo "</pre>";
 
 
