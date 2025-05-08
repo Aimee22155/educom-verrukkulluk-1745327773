@@ -135,16 +135,16 @@ class Dishes {
                 $favorites = $this->selectFavorites($dish['id']);
                 
                 // Voeg deze toe aan het gerecht
-                $dish['user'] = $user;
-                $dish['kitchen'] = $kitchen;
-                $dish['type'] = $type;
-                $dish['ingredients'] = $ingredients;
+                $dish['User'] = $user;
+                $dish['Kitchen'] = $kitchen;
+                $dish['Type'] = $type;
+                $dish['Ingredients'] = $ingredients;
                 $dish['Price'] = $price;
-                $dish['calories'] = $calories;
+                $dish['Calories'] = $calories;
                 $dish['Rating'] = $rating;
-                $dish['preparation_steps'] = $preparationSteps;
-                $dish['comments'] = $comments;
-                $dish['favorites'] = $favorites;
+                $dish['Preparation_steps'] = $preparationSteps;
+                $dish['Comments'] = $comments;
+                $dish['Favorites'] = $favorites;
     
                 $dishes[] = $dish;
             }
