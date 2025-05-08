@@ -39,7 +39,6 @@ class Grocery_list {
         while ($row = mysqli_fetch_assoc($result)) {
             $ingredients[] = $row;
         }
-
         return $ingredients;
     }
 
@@ -52,22 +51,21 @@ class Grocery_list {
         while ($row = mysqli_fetch_assoc($result)) {
             $groceries[] = $row;
         }
-
         return $groceries;
     }
 
     //Article toevoegen
-    private function addArticle($user_id, $artikel_id, $artikel_naam, $eenheid, $hoeveelheid) {
-        $sql = "INSERT INTO groceries_list (user_id, article_id, article_name, unit, total_quantity)
-                VALUES ($user_id, $artikel_id, '$artikel_naam', '$eenheid', $hoeveelheid)";
+    private function addArticle($user_id, $article_id, $name, $unit, $quantity) {
+        $sql = "INSERT INTO groceries_list (user_id, article_id, name, unit, total_quantity)
+                VALUES ($user_id, $article_id, '$name', '$unit', $quantity)";
         mysqli_query($this->connection, $sql);
     }
 
     //Article bijwerken
-    private function updateArticle($user_id, $artikel_id, $hoeveelheid) {
+    private function updateArticle($user_id, $article_id, $quantity) {
         $sql = "UPDATE groceries_list 
-                SET total_quantity = total_quantity + $hoeveelheid 
-                WHERE user_id = $user_id AND article_id = $artikel_id";
+                SET total_quantity = total_quantity + $quantity
+                WHERE user_id = $user_id AND article_id = $article_id";
         mysqli_query($this->connection, $sql);
     }
 
