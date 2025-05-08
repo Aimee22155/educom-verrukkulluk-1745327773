@@ -3,12 +3,10 @@
 class Grocery_list {
     // Properties
     private $connection;
-    private $article;
 
     // Methods
     public function __construct($connection) {
         $this->connection = $connection;
-        $this->article = new Article($connection);
         $this->createGroceriesListTable();
     }
 
@@ -94,7 +92,7 @@ class Grocery_list {
             $price = $ingredient['price'];
     
             if ($this->articleOnList($user_id, $article_id)) 
-            { $this->updateArticle($user_id, $article_id, $quantity);
+                { $this->updateArticle($user_id, $article_id, $quantity);
     
                 $grocery_list[] = [
                     'user_id' => $user_id,
