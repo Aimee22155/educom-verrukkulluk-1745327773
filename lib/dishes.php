@@ -100,9 +100,9 @@ class Dishes {
     }
 
     // === Public method === 
-    public function selectRecipeOrMore($dish_ids = null) {
+    public function selectRecipeOrMore($dish_id = null) {
         //foutmelding indien geen dish_id
-        if ($dish_ids === null) {
+        if ($dish_id === null) {
             throw new InvalidArgumentException("Please select dish_id");
         }
     
@@ -110,12 +110,12 @@ class Dishes {
         $dishes = []; 
     
         // Controleert of de input een array is. Zo niet, dan wordt het in een array geplaatst
-        if (!is_array($dish_ids)) {
-            $dish_ids = [$dish_ids];
+        if (!is_array($dish_id)) {
+            $dish_id = [$dish_id];
         }
     
         // Loopt door elk dish_id in de array van dish_ids
-        foreach ($dish_ids as $dish_id) {
+        foreach ($dish_id as $dish_id) {
             $sql = "SELECT * FROM dishes WHERE id = " . $dish_id;
             $result = mysqli_query($this->connection, $sql);
             $dish = mysqli_fetch_array($result, MYSQLI_ASSOC);
@@ -151,7 +151,7 @@ class Dishes {
         }
     
         // Bepaalt wat er geretourneerd moet worden (één gerecht of meerdere)
-        if (count($dishes) === 1 && !is_array($dish_ids)) {
+        if (count($dishes) === 1 && !is_array($dish_id)) {
             return $dishes[0];
         } else {
             return $dishes;

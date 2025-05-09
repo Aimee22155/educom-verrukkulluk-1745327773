@@ -37,7 +37,7 @@ $dishInfoData = $dishInfoObj->selectDishInfo(1, 2);
 $addFavoriteResult = $dishInfoObj->AddFavoriteIfNotExists(1, 2, 3);
 $deleteFavoriteResult = $dishInfoObj->deleteFavorite(1, 2, 3);
 
-$selectRecipes = $dishesObj->selectRecipeOrMore($dish_ids);
+$selectRecipes = $dishesObj->selectRecipeOrMore($dish_id);
 
 $articleList = $groceryListObj->articleOnList($user_id, 1);
 $groceryList = $groceryListObj->addGroceries($dish_id, $user_id);
@@ -45,7 +45,7 @@ $groceryList = $groceryListObj->addGroceries($dish_id, $user_id);
 // === OUTPUT ===
 // Display the fetched data
 echo "<pre>";
-var_dump(
+//var_dump(
     // $articleData, 
     // $userData, 
     // $kitchenTypeData,
@@ -53,8 +53,8 @@ var_dump(
     // $dishInfoData, 
     // $addFavoriteResult, 
     // $deleteFavoriteResult,
-    $groceryList,
-    $articleList);
-//print_r($selectRecipes);
+    // $groceryList,
+    // $articleList);
+print_r($selectRecipes);
 echo "</pre>";
 
