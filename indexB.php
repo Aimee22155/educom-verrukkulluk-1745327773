@@ -2,7 +2,7 @@
 
 require_once("lib/database.php");
 require_once("lib/article.php");
-require_once("lib/user.php");
+require_once("lib/User.php");
 require_once("lib/kitchen_type.php");
 require_once("lib/ingredient.php");
 require_once("lib/dish_info.php");
@@ -45,16 +45,16 @@ $groceryList = $groceryListObj->addGroceries($dish_id, $user_id);
 // === OUTPUT ===
 // Display the fetched data
 echo "<pre>";
-//var_dump(
-    // $articleData, 
-    // $userData, 
-    // $kitchenTypeData,
-    // $ingredientData, 
-    // $dishInfoData, 
-    // $addFavoriteResult, 
-    // $deleteFavoriteResult,
-    // $groceryList,
-    // $articleList);
+// var_dump(
+//     $articleData, 
+//      $userData, 
+//     $kitchenTypeData,
+//     $ingredientData, 
+//    $dishInfoData);
+//     $addFavoriteResult, 
+//     $deleteFavoriteResult,
+//     $groceryList,
+//     $articleList);
 print_r($selectRecipes);
 echo "</pre>";
 

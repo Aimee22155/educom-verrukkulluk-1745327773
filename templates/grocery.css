@@ -1,0 +1,120 @@
+.Groceries {
+    margin: 40px;
+    padding: 20px;
+    background-color: #fff; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.Groceries h1 {
+    color: #6e8722; 
+    margin-bottom: 20px;
+    margin-left: 30px;
+    text-align: left;
+}
+
+.boodschap-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.boodschap-item:last-child {
+    border-bottom: none;
+}
+
+.item-afbeelding {
+    width: 80px; 
+    margin-right: 15px;
+}
+
+.item-afbeelding img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.item-details {
+    flex-grow: 1;
+    margin-right: 15px;
+}
+
+.item-details h3 {
+    font-weight: normal;
+}
+
+.item-details p {
+    font-size: 14px;
+}
+
+
+.item-naam {
+    margin-top: 0;
+    color: #558B2F;
+    font-weight: bold;
+}
+
+.item-beschrijving {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 0;
+}
+
+.item-aantal {
+    margin-right: 15px;
+}
+
+.item-aantal input[type="number"] {
+    width: 60px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    color: #6e8722;
+}
+
+.item-prijs {
+    margin-right: 20px;
+    color: #000;
+    font-size: 1 em;
+}
+
+.item-acties {
+    display: flex;
+    align-items: center;
+}
+
+.item-acties button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 1em;
+}
+
+.item-acties button:first-child {
+    color: #4CAF50;
+    margin-left: 0;
+}
+
+.item-acties button:last-child {
+    color: #F44336;
+}
+
+.total-price {
+    margin-top: 50px;
+    margin-left: 30px;
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+}
+
+h2.Total {
+    font-weight: normal;
+}
+
+.price {
+    color: #F44336;
+}

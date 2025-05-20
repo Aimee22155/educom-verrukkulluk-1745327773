@@ -1,5 +1,166 @@
 {% extends "main.html.twig" %}
 
 {% block header %}
-<h1>Hallo Bram</h1>
+
+    {% set dish = data %}
+    <div class="banner_detail" style="background-image: url('assets/img/{{ dish.image }}');">
+        <div class="banner-logo">
+            <a href="http://localhost/educom-verrukkulluk-1745327773/indexF.php">
+                <img src="assets/img/logo-v2.png" alt="Logo">
+            </a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {% set dish = data %}
+            <div class="dish-detail-card">
+                <div class="dish-image">
+                    <img src="assets/img/{{ dish.image }}" alt="{{ dish.title }}">
+                </div>
+                <div class="dish-info">
+                    <div class="extra_info">
+                        <span class="persons"><i class="fa fa-users"></i> {{ 4 }}</span>
+                        <span class="price"><i class="fa fa-euro"></i> {{ dish.Price|default('-') }}</span>
+                        <span class="calories"><i class="fa fa-fire"></i> {{ dish.Calories|default('-') }}</span>
+                    </div>
+                    <div class="dish_header">
+                        <h2>{{ dish.title }}</h2>
+                        <div class="rating">
+                            {% for i in 1..5 %}
+                                {% if i <= (dish.Rating|default(0)) %}
+                                    <span class="star filled"><i class="fa fa-star"></i></span>
+                                {% else %}
+                                    <span class="star"><i class="fa fa-star"></i></span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="details-row">
+                        <span class="label"><h3>Keuken</h3></span> <span class="value">{{ dish.Kitchen.description|default('-') }}</span>
+                        <span class="label type-label"><h3>Type</h3></span> <span class="value">{{ dish.Type.description|default('-') }}</span>
+                    </div>
+                    <p class="short-description">{{ dish.short_description }}</p>
+                    <p class="long-description">{{ dish.long_description }}</p>
+                    <div class= "footer_card" >
+                        <div class="smullenbtn">
+                            <a href="indexF.php?action=grocery_list&dish_id={{ dish.id }}" class="smullen-button">Op Lijst</a>
+                        </div>
+                        <div class="heart-icon">
+                            <i id="favorite-heart" class="fa fa-heart-o"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+        <div class="col-md-12">
+            <div class="tabs">
+                <input type="radio" id="ingredients" name="tabs" checked>
+                <label for="ingredients"><h4>Ingredients</h4></label>
+
+                <input type="radio" id="preparation" name="tabs">
+                <label for="preparation"><h4>Preparation</h4></label>
+
+                <input type="radio" id="notes" name="tabs">
+                <label for="notes"><h4>Comments</h4></label>
+
+                <div id="content-ingredients" class="tab-content">
+                    <ul>
+                        {% for ingredient in dish.Ingredients %}
+                            <li>
+                                <div class="plaatje">
+                                    <img src="assets/img/{{ ingredient.plaatje }}" alt="{{ ingredient.name }}"> 
+                                </div>
+                                <div class="ingredient_txt">
+                                    <h3> {{ ingredient.name }}</h3>
+                                    <p> 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' </p>
+                                    <div class="hoeveelheid">
+                                        <H4> Hoeveelheid:</H4> <p> {{ ingredient.quantity }} {{ ingredient.unit|default('') }}</p>
+                                    </div>
+                                </div> 
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div id="content-preparation" class="tab-content">
+                    <ol>
+                        {% for step in dish.Preparation_steps.preparation_steps|sort((a, b) => a.numberfield <=> b.numberfield) %}
+                            <li>{{ step.textfield }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <div id="content-notes" class="tab-content">
+                    <ul>
+                        {% for comment in dish.Comments.comments %}
+                            <li>
+                                {# <div class="Plaatje user">
+                                    <img src="..." alt="{{ ... }}"> 
+                                </div> #}
+                                {{ comment.textfield }} 
+                                ({% if comment.User.user_name is defined and comment.User.user_name is not empty %}
+                                    {{ comment.User.user_name }}
+                                {% else %}
+                                    Gast
+                                {% endif %})
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wacht tot de DOM (Document Object Model) volledig geladen is.
+            const heart = document.getElementById('favorite-heart');
+            // Haalt het HTML-element met de ID 'favorite-heart' op.
+            const dishId = '{{ dish.id }}';
+            // Definieert de ID van het huidige gerecht.
+            const storageKey = 'favorite_dishes';
+            // Definieert de sleutel die gebruikt wordt om de favoriete gerechten op te slaan in de lokale opslag van de browser (localStorage).
+
+            // Laad favorieten uit localStorage
+            let favorites = JSON.parse(localStorage.getItem(storageKey)) || [];
+            // Probeert de opgeslagen favoriete gerechten op te halen uit de localStorage.
+            // JSON.parse() converteert de string die is opgeslagen terug naar een JavaScript array.
+            // Als er niets is opgeslagen onder de 'storageKey', dan wordt er een lege array ([]) gebruikt.
+
+            // Controleer of dit gerecht favoriet is en update het icoon
+            if (favorites.includes(dishId)) {
+                heart.classList.remove('fa-heart-o');
+                heart.classList.add('fa-heart');
+            }
+
+            heart.addEventListener('click', () => {
+                // Voegt een event listener toe aan het 'heart' element dat reageert op een klik.
+                if (favorites.includes(dishId)) {
+                    favorites = favorites.filter(id => id !== dishId);
+                    // Filtert de 'favorites' array om alle IDs te behouden behalve de ID van het huidige gerecht.
+                    heart.classList.remove('fa-heart');
+                    // Verwijdert de CSS-klasse voor het gevulde hart.
+                    heart.classList.add('fa-heart-o');
+                    // Voegt de CSS-klasse toe voor het lege hart.
+
+                } else {
+                    favorites.push(dishId);
+                    // Voegt de ID van het huidige gerecht toe aan de 'favorites' array.
+                    heart.classList.remove('fa-heart-o');
+                    // Verwijdert de CSS-klasse voor het lege hart.
+                    heart.classList.add('fa-heart');
+                    // Voegt de CSS-klasse toe voor het gevulde hart.
+                }
+                localStorage.setItem(storageKey, JSON.stringify(favorites));
+                // Slaat de bijgewerkte 'favorites' array op in de localStorage.
+                // JSON.stringify() converteert de JavaScript array naar een string die opgeslagen kan worden.
+            });
+        });
+    </script>
+
 {% endblock %}

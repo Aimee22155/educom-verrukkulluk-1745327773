@@ -1,0 +1,40 @@
+<a href="https://fontawesome.com/icons?d=gallery&m=free">Documentation</a>
+<a href="https://www.layoutit.com/build">Layout-it</a>
+
+
+ <h1>{{ dish.title }}</h1>
+
+    <ul>
+        {% for record in data %}
+            <li>
+                <img src="{{ record.foto }}" style="width: 100px; height: 100px;">
+                {{ record.title }}
+
+                <ul>
+                    {% for ingr in record.ingredienten %}
+                        <li>
+                            <span {% if ingr.id < 2 %}style="color: #F00"{% endif %}>{{ ingr.naam }}</span>
+
+                            {% if ingr.id == 3 %}
+                                <strong>Dit is ID 3!</strong>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="smullenbtn">
+        <a href="indexF.php?action=detail&dish_id={{ dish.id }}" class="smullen-button">Op Lijst</a>
+    </div> 
+
+    {# Debug info #}
+    {# <pre>{{ dump(data) }}</pre> #}
+
+
+
+
+
+
+

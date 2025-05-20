@@ -1,48 +1,75 @@
-{# Opnemen van de "Main" file #}
 {% extends "main.html.twig" %}
 
 {% block header %}
-<img src="assets/img/logo-v2.png"/>
+    <div class="banner">
+        <div class="banner-logo">
+            <img src="assets/img/logo-v2.png"/>
+        </div>
+    </div>
+    <div class="paging">
+        <span class="dot"></span>
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
 {% endblock %}
 
-
-{# nu de block content op in de main pagina vullen #}
 {% block content %}
-    {# Dit is commentaar #}
+    {% for pair in data|batch(2, null) %}
+        <div class="row">
+            {% for dish in pair %}
+                {% if dish %}
+                    <div class="col-md-6">
+                        <div class="dish-item">
+                            <img src="assets/img/{{ dish.image }}" alt="{{ dish.title }}">
+                            <div class="dish-content">
+                                <div class="dish-header">
+                                    <h2>{{ dish.title }}</h2>
+                                        {# Rating #}
+                                        {% set total = 0 %}
+                                        {% set count = 0 %}
 
-    {# Print #}
-    <h1>Heading #1</h1>
-    <h2>Heading #2</h2>
-    <h3>Heading #3 t/m 5</h3>
+                                        {% for item in dish.Rating.rating %}
+                                            {% set total = total + (item.numberfield ?: 0) %}
+                                            {% set count = count + 1 %}
+                                        {% endfor %}
 
-    <h4>Dit is de template {{  title }}</h4>
+                                        {% set avg = count > 0 ? (total / count)|round(1, 'floor') : 0 %}
+                                        {% set maxStars = 5 %}
 
-{# Loop #}
-    <ul>
-    {% for record in data %}
-        <li>
-            <img src="{{ record.foto }}" style="width: 100px; heigfht: 100px;">
-
-            {{ record.title }}
-            {# sub-loop #}
-            <ul>
-                {% for ingr in record.ingredienten %}
-                    <li>
-                        <span {% if ingr.id < 2 %}style='color: #F00'{% endif %}>{{  ingr.naam }}</span>
-
-                        {# if #}
-                        {%  if ingr.id == 3 %}
-                            <strong>Dit is ID 3!</strong>
-                        {%  endif  %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </li>
+                                        <div class="rating">
+                                            {% for i in 1..maxStars %}
+                                                {% if i <= avg %}
+                                                    <span class="star filled"><i class="fa fa-star"></i></span>
+                                                {% else %}
+                                                    <span class="star"><i class="fa fa-star"></i></span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                </div>
+                                <p class="short-description">{{ dish.short_description }}</p>
+                                <div class="dish-footer">
+                                    <div class="smullenbtn">
+                                      <a class="smullen-button" href="indexF.php?action=detail&dish_id={{ dish.id }}">Smullen!</a>
+                                    </div>
+                                    <div class="icoontjes_home">
+                                        <span class="persons"><i class="fa fa-users"></i>{{ 4 }}</span>
+                                        <span class="price"><i class="fa fa-euro"></i>{{ dish.Price|default('-') }}</span>
+                                        <span class="calories"><i class="fa fa-fire"></i>{{ dish.Calories|default('-')}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
     {% endfor %}
-    <ul>
-     {# Dump #}
-       <pre>
-        {{ dump(data) }}
-       </pre>
 
+    <div class="pagination">
+        {% for i in 1..8 %}
+            <span class="page-number {% if i == 1 %}active{% endif %}">{{ i }}</span>
+        {% endfor %}
+    </div>
+    
 {% endblock %}

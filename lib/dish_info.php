@@ -42,6 +42,7 @@ class DishInfo {
                         break;
                     case 'C':
                         $dish_info['comments'][] = $row;
+                        // loop user_id/user_name
                         break;
                     case 'F':
                         $dish_info['favorites'][] = $row;

@@ -1,0 +1,156 @@
+
+.banner {
+    position: relative;
+    background-image: url(https://static.vecteezy.com/system/resources/previews/053/329/746/non_2x/fresh-vegetables-isolated-on-white-background-for-healthy-cooking-free-photo.jpeg);
+    background-position: center;
+    width: 100%;
+    height: 535px;
+    background-size: cover;
+}
+
+.banner-logo img {
+    float: left;
+    margin-top: 25px;
+    margin-left: 50px;
+    width: 27%;
+    height: auto;
+}
+
+.paging {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.dot {
+    height: 15px;
+    width: 15px;
+    background-color: #eb8d1f;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 5px;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.dot.active {
+    background-color: #eb8d1f;
+    opacity: 1;
+}
+
+.dish-item {
+    margin-bottom: 50px;
+    margin-left: 30px;
+    text-align: center; 
+    height: 500px;
+    box-shadow: 3px 3px 3px rgba(0.2, 0.2, 0.2, 0.2);
+}
+
+.dish-content {
+    margin: 20px;
+    text-align: left;
+    align-items: center;
+}
+
+.dish-item img {
+    width: 100%;
+    height: 200px; 
+    object-fit: cover;
+}
+
+.dish-header h2 {
+    color: #6e8722;
+}
+
+.dish-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dish-item p.short-description {
+    font-style: 'arial, sans-serif';
+    font-size: 12px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+.star.filled  { color: #FFC107; }  /* geel */
+.star         { color: #C0C0C0; }  /* grijs */
+
+
+.dish-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.smullen-button {
+    background-color: #dc3439;
+    width: 110px;
+    height: 35px;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.smullenbtn {
+    font-family: "pretty_lilyregular", Brush, cursive;
+    font-size: 24px;
+    text-align: center;
+}
+
+.smullen-button:hover {
+    background-color: #b31714;
+}
+
+.icoontjes_home {
+    display: flex;
+    gap: 10px; 
+    justify-content: center; 
+    align-items: center;
+    margin-bottom: 0px;
+}
+
+.icoontjes_home i {
+    color: #b31714;
+    margin-right: 3px;
+}
+
+.icoontjes_home span {
+    color: #000;
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.page-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 20px;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    color: #4e4b4b;
+    font-size: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.page-number.active {
+    background-color: #ffff;
+    font-weight: bold;
+}
+
+.page-number:hover {
+    background-color: #eee;
+}

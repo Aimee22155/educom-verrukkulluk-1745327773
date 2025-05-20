@@ -1,5 +1,11 @@
 <?php
 
+// // Include the required classes
+// require_once("lib/User.php");
+// require_once("lib/kitchen_type.php");
+// require_once("lib/ingredient.php");
+// require_once("lib/dish_info.php");
+
 class Dishes {
     // === Properties === variabelen in huidige class + benodigde classes
     private $connection;
@@ -101,53 +107,46 @@ class Dishes {
 
     // === Public method === 
     public function selectRecipeOrMore($dish_id = null) {
+
+        $sql = "SELECT * FROM dishes";
         //foutmelding indien geen dish_id
-        if ($dish_id === null) {
-            throw new InvalidArgumentException("Please select dish_id");
+        if($dish_id !== null) {
+            $sql .= " WHERE id = " . mysqli_real_escape_string($this->connection, $dish_id);
         }
-    
+
         // maakt een array om de opgehaalde gerechten op te slaan
         $dishes = []; 
-    
-        // Controleert of de input een array is. Zo niet, dan wordt het in een array geplaatst
-        if (!is_array($dish_id)) {
-            $dish_id = [$dish_id];
-        }
-    
-        // Loopt door elk dish_id in de array van dish_ids
-        foreach ($dish_id as $dish_id) {
-            $sql = "SELECT * FROM dishes WHERE id = " . $dish_id;
-            $result = mysqli_query($this->connection, $sql);
-            $dish = mysqli_fetch_array($result, MYSQLI_ASSOC);
-    
-            if ($dish) {
-                $user_id = 1;
-                // Vul gerelateerde gegevens in
-                $user = $this->selectUser($user_id);
-                $kitchen = $this->selectKitchen($dish['kitchen_id']);
-                $type = $this->selectType($dish['type_id']);
-                $ingredients = $this->selectIngredient($dish['id']);
-                $price = $this->calcPrice($ingredients);
-                $calories = $this->calcCalo($ingredients);
-                $rating = $this->selectRating($dish['id']);
-                $preparationSteps = $this->selectPreparationSteps($dish['id']);
-                $comments = $this->selectComments($dish['id']);
-                $favorites = $this->selectFavorites($dish['id']);
-                
-                // Voeg deze toe aan het gerecht
-                $dish['User'] = $user;
-                $dish['Kitchen'] = $kitchen;
-                $dish['Type'] = $type;
-                $dish['Ingredients'] = $ingredients;
-                $dish['Price'] = $price;
-                $dish['Calories'] = $calories;
-                $dish['Rating'] = $rating;
-                $dish['Preparation_steps'] = $preparationSteps;
-                $dish['Comments'] = $comments;
-                $dish['Favorites'] = $favorites;
-    
-                $dishes[] = $dish;
-            }
+        $result = mysqli_query($this->connection, $sql);
+
+        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+            $dish_id = $row["id"];
+            $user_id = 1; // Example user ID, replace with actual logic if needed
+
+            // Fetch related data using $row
+            $user = $this->selectUser($user_id);
+            $kitchen = $this->selectKitchen($row['kitchen_id']);
+            $type = $this->selectType($row['type_id']);
+            $ingredients = $this->selectIngredient($row['id']);
+            $price = $this->calcPrice($ingredients);
+            $calories = $this->calcCalo($ingredients);
+            $rating = $this->selectRating($row['id']);
+            $preparationSteps = $this->selectPreparationSteps($row['id']);
+            $comments = $this->selectComments($row['id']);
+            $favorites = $this->selectFavorites($row['id']);
+
+            // Add related data to the dish
+            $row['User'] = $user;
+            $row['Kitchen'] = $kitchen;
+            $row['Type'] = $type;
+            $row['Ingredients'] = $ingredients;
+            $row['Price'] = $price;
+            $row['Calories'] = $calories;
+            $row['Rating'] = $rating;
+            $row['Preparation_steps'] = $preparationSteps;
+            $row['Comments'] = $comments;
+            $row['Favorites'] = $favorites;
+
+            $dishes[] = $row;
         }
     
         // Bepaalt wat er geretourneerd moet worden (één gerecht of meerdere)

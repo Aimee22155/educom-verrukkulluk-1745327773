@@ -46,6 +46,7 @@ class Ingredient {
                 "price" => $art_ing["price"],
                 "packaging" => $art_ing["packaging"],
                 "calories" => $art_ing["calories"],
+                "plaatje" => $art_ing["plaatje"]
             ];
         }
         return($Ingredient);

@@ -1,56 +1,182 @@
 
 <html lang="nl">
 <head>
-
-    <title>Het is verrukkuluk! :: {{ TITEL }} </title>
+<!-- standaard -->
+    <title>Het is verrukkuluk! {{ TITEL }} </title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/fonts.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/fontawesome.css" />
-
+    {# <link rel="stylesheet" type="text/css" href="assets/css/fontawesome.css"/> #}
     <link rel="stylesheet" type="text/css" href="assets/css/main.css" />
+    <!-- toegevoegd -->
+    <link rel="stylesheet" type="text/css" href="templates/Main.css"/>
+    <link rel="stylesheet" type="text/css" href="templates/home.css"/>
+    <link rel="stylesheet" type="text/css" href="templates/detail.css"/>
+    <link rel="stylesheet" type="text/css" href="templates/grocery.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
 
     <script type="text/javascript" language="javascript" src="assets/jquery/jquery-3.5.1.js"></script>
     <script type="text/javascript" language="javascript" src="assets/bootstrap/js/bootstrap.js"></script>
 
-</html>
+</head>
 <body>
-<div class="container-fluid">
+<div class="main-body">
+    <div class="container-fluid">
+        {# rij 1 #}
+        <div class="row header-row">
+            <div class="col-md-12">
+                <div class="header">
+                    {% block header %}
+                    {#  #}
+                    {% endblock %}
 
-    <div class="row">
-        <div class="col-md-12">
-        {% block header %}
-         {#....#}
-        {% endblock %}   
+                    {# zoekbalk #}
+                    <div class="search-container">
+                        <div class="search-bar">
+                            <input type="text" placeholder="Search">
+                            <button type="submit" class="searchbtn">🔍</button>
+                        </div>
+                    </div>
+
+                    {# menu #}
+                    <div class="menu">
+                        <div class="menu-trigger">
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div>
+
+                        <div class="dropdown">
+                            <div class="dropdown-inner">
+                                <div class="menu-logo">
+                                    <img src="assets/img/logo-v2.png" alt="Logo" />
+                                </div>
+                                <div class="menu-links">
+                                    <div><h2>Mijn Favorieten</h2></div>
+                                    <div><h2><a href="http://localhost/educom-verrukkulluk-1745327773/indexF.php?dish_id=4&action=grocery_list" target="_blank">Mijn boodschappenlijst</a></h2></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>  
+        </div>
+
+        {# rij 2 #}
+        <div class="row content-row">
+            {# rij 2a agenda + login #}
+            <div class="col-md-4">
+                
+                <!-- Agenda -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="content">
+                        <div class="Agenda">
+                                <h2><img src="assets/img/verrukkulluk-agenda.png"/></h2>
+                                <div class="calendar-content">
+                                    <div class="calendar-icon">
+                                        <i class="fa fa-calendar"></i>
+                                        <div class="agenda-text">
+                                            <h3>Vegetarisch koken</h3>
+                                            <p>Een workshop vegetarisch koken, onder leiding van Gordon Ramsay.</p>
+                                        </div>
+                                    </div><br>
+                                </div>
+                                <div class="calendar-content">
+                                    <div class="calendar-icon">
+                                        <i class="fa fa-calendar"></i>
+                                        <div class="agenda-text">
+                                            <h3>Vegetarisch koken</h3>
+                                            <p>Een workshop vegetarisch koken, onder leiding van Gordon Ramsay.</p>
+                                        </div>
+                                    </div><br>
+                                </div>
+                                <div class="calendar-content">
+                                    <div class="calendar-icon">
+                                        <i class="fa fa-calendar"></i>
+                                        <div class="agenda-text">
+                                            <h3>Vegetarisch koken</h3>
+                                            <p>Een workshop vegetarisch koken, onder leiding van Gordon Ramsay.</p>
+                                        </div>
+                                    </div><br>
+                                </div>
+                                <div class="calendar-content">
+                                    <div class="calendar-icon">
+                                        <i class="fa fa-calendar"></i>
+                                        <div class="agenda-text">
+                                            <h3>Vegetarisch koken</h3>
+                                            <p>Een workshop vegetarisch koken, onder leiding van Gordon Ramsay.</p>
+                                        </div>
+                                    </div><br>
+                                </div>
+                                <div class="calendar-content">
+                                    <div class="calendar-icon">
+                                        <i class="fa fa-calendar"></i>
+                                        <div class="agenda-text">
+                                            <h3>Vegetarisch koken</h3>
+                                            <p>Een workshop vegetarisch koken, onder leiding van Gordon Ramsay.</p>
+                                        </div>
+                                    </div><br>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="content">
+                            <div class="Login">
+                                <h2><img src="assets/img/verrukkulluk-login.png"/></h2>
+                                <form>
+                                <div class="login_text">
+                                    <label for="Email">Email</label><br>
+                                </div>
+                                <input type="text" id="Email" Email="Email"><br>
+                                <div class="login_text">
+                                    <label for="Password">Password</label><br>
+                                </div>
+                                <input type="password" id="Password" Password="Password"></form><br>
+                                <h3><button type="button">Login</button><h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        
+            {# rij 2b: main content vanuit child template #}
+            <div class="col-md-8">
+                    {% block content %}
+                    {# #}
+                    {% endblock %}
+            </div>
+        </div>
+        
+        {# rij 3 #}
+        <div class="row footer-row"> 
+            <div class="col-md-12">
+                <div class="Footer">
+                    <img src="assets/img/verrukkulluk-pay-off.png" class="footer-logo" alt="Verrukkuluk Payoff" />
+                    <div class="contact-info">
+                        <img src="assets/img/verrukkulluk-contact.png" alt="Contact" />
+                        <div class="contact-details">
+                            <p>Verrukkuluk.nl<br>
+                            Poststraat 2b<br>
+                            Sittard<br>
+                            info@verrukkuluk.nl
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-md-3">
-            <h2>Agenda</h2>
-            <i class="fa fa-calendar"></i> FontAwesome <a href="https://fontawesome.com/icons?d=gallery&m=free">Documentation</a><br>
-            <i class="fa fa-file-pdf"></i><a href="https://www.layoutit.com/build">Layout-it</a>
-
-
-        </div>
-        <div class="col-md-9">
-            <h2>Content</h2>
-            {%  block content %}
-            {#....#}
-            {%  endblock %}
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Footer</h1>
-        </div>
-    </div>
-
-
 </div>
-
 </body>
+</html>
 

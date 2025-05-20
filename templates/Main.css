@@ -1,0 +1,333 @@
+@font-face {
+    font-family: "pretty_lilyregular";
+    src: url('../assets/fonts/pretty_lily-webfont.woff2') format('woff2'),
+         url('../assets/fonts/pretty_lily-webfont.woff') format('woff');
+}
+
+.main-body{
+    padding-left: 140px;
+    padding-right: 140px;
+}
+
+/* header section */
+.header {
+    position: relative;
+    width: 100%;
+}
+
+.header .row.header-row .col-md-12{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.header .search-container {
+    position: absolute;
+    top: 30px;
+    right: 20px;
+    z-index: 1000;
+    margin-right: 80px;
+}
+
+.header .search-bar {
+    position: relative;
+    border-radius: 20px; 
+    border: 1px solid #ccc;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    width: 300px;
+    height: 35px;
+}
+
+.header .search-bar input[type="text"] {
+    padding: 10px 15px 10px 40px;
+    border: none;
+    font-size: 16px;
+    flex-grow: 1;
+    border-radius: 20px;
+}
+
+.header .search-bar input[type="text"]:focus {
+    outline: none;
+}
+
+.header .search-bar .searchbtn {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    font-size: 18px; 
+    color: #dc3439;
+}
+
+.header .menu {
+    position:absolute;
+    top: 5px;
+    right: 15px;
+    z-index: 1002;
+}
+
+.header .menu-trigger {
+    background-color: transparent;
+    width: 50px;
+    height: 50px;
+    margin: 20px;
+    border-radius: 25px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.header .bar {
+    width: 45px;
+    height: 4px;
+    margin: 3px;
+    background-color: #fca01f;
+    border-radius: 5px;
+}
+
+.header .dropdown {
+    position: fixed;
+    top: -430px;
+    left: 147px;
+    right: 147px;
+    width: auto;
+    height: 150px;
+    background-color: #ffffff;
+    color: #dc3439;
+    font-family: "pretty_lilyregular", Brush, cursive;
+    font-size: 32px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 50px;
+    padding-right: 100px;
+    transition: top 0.4s ease, opacity 0.4s ease;
+    border: 0.5px solid black;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 1002;
+}
+
+.header .dropdown-inner {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header .menu:hover .dropdown {
+    top: 0px;
+}
+
+.header .menu-logo img {
+    height: 100px;
+    width: auto;
+    margin: 30px;
+}
+
+.header .menu-links {
+    display: flex;
+    gap: 100px;
+    align-items: center;
+    margin: 30px;
+    font-size: 32px;
+}
+
+.header .menu-links div {
+    cursor: pointer;
+    transition: color 0.3s ease;
+    font-family: "pretty_lilyregular", Brush, cursive;
+    font-weight: bold;
+    font-size: 32px;
+}
+
+.header .menu-links div a {
+    text-decoration: none;
+    color: #dc3439; 
+}
+
+.header .menu-links div:hover {
+    color: #b31714;;
+}
+
+.header .menu-links div:hover a {
+    color: #b31714;;
+}
+
+
+/*content section*/
+.Agenda {
+    background-color: #95b82d;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    margin-left: 50px;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.Agenda h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Agenda h2 img {
+    float: none;
+    display: block;
+    width: 130px;
+    height: auto;
+    margin: 10px auto;
+}
+
+.calendar-content {
+    margin-left: 20px;
+    margin-right: 30px;
+    text-align: left;
+}
+
+.calendar-icon {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.calendar-icon i {
+    font-size: 1.5em;
+    color: white;
+    margin: 5px;
+}
+
+.calendar-icon span.calendar-number {
+    color: white;
+    margin-right: 10px;
+}
+
+.calendar-icon .agenda-text h3 {
+    color: black;
+}
+
+.calendar-icon .agenda-text p {
+    color: black;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.Login {
+    background-color: #b31714;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+    margin-top:20px;
+    margin-left: 50px;
+    padding: 20px;
+}
+
+.Login h2 {
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+}
+
+.Login h2 img {
+    float: center;
+    width: 50%;
+    height: auto;
+}
+
+.Login .login_text {
+    display: flex; 
+    justify-content: left;
+    font: 'arial, sans-serif';
+    font-size: 10px;
+}
+
+.Login form {
+    color: white;
+    font: 'arial, sans-serif';
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    justify-content: center;
+}
+
+.Login h3 {
+    display: flex; 
+    justify-content: center;
+}
+
+.Login input {
+    width: 100%;;
+    height: 25px;
+    border-radius: 3px;
+    border: none;
+    background-color: #f2f2f2;
+}
+
+.Login button{
+    background-color: #fca01f;
+    color: white;
+    border-radius: 5px;
+    border-radius: 15px;
+    border: none;
+    width: 150px;
+}
+
+.col-md-8 {
+    padding-top: 50px;
+    padding-right: 50px;
+}
+
+/* Footer */
+.Footer {
+    background-color: #eb8d1f;
+    margin-top: 40px;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+}
+
+.Footer .footer-logo {
+    width: 90px;
+    height: auto;
+    margin-left: 60px;
+    margin-right: 40px;
+    margin-top: 40px;
+}
+
+.Footer .contact-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.Footer .contact-info img {
+    width: 150px; 
+    height: auto;
+    margin-top: 50px;
+}
+
+.Footer .contact-info .contact-details p {
+    font-size: 12px;
+    width: 140px; 
+    color: #fff0d6;
+    margin-top: 15px;
+    margin-bottom: 60px;
+    line-height: 1.2;
+}
+
+
+
