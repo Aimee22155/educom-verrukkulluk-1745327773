@@ -1,6 +1,9 @@
 .Groceries {
-    margin: 40px;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-bottom: 40px;
     padding: 20px;
+    height: 1050px;
     background-color: #fff; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
@@ -49,7 +52,6 @@
     font-size: 14px;
 }
 
-
 .item-naam {
     margin-top: 0;
     color: #558B2F;
@@ -63,27 +65,36 @@
 }
 
 .item-aantal {
+    width: 60px;
     margin-right: 15px;
 }
 
 .item-aantal input[type="number"] {
     width: 60px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    height: auto;
     text-align: center;
-    color: #6e8722;
+    border: 0.5px solid #6e8722;
+    border-radius: 10%;  
+    padding: 5px;
+    color:#6e8722; 
+    margin-right: 15px; 
 }
 
-.item-prijs {
-    margin-right: 20px;
+.item-prijs span {
+    margin-right: 15px;
     color: #000;
     font-size: 1 em;
+}
+
+.price i {
+    color: #dc3439;
 }
 
 .item-acties {
     display: flex;
     align-items: center;
+    font-size: 1.5em;
+    margin-left: 5px;
 }
 
 .item-acties button {
@@ -100,21 +111,30 @@
 }
 
 .item-acties button:last-child {
-    color: #F44336;
+    color: #dc3439;
 }
 
 .total-price {
     margin-top: 50px;
-    margin-left: 30px;
     display: flex;
     justify-content: space-between;
-    /* align-items: center; */
+    align-items: center;
 }
 
 h2.Total {
     font-weight: normal;
+    margin-left: 30px;
 }
 
 .price {
-    color: #F44336;
+    color: #dc3439;
+}
+
+.total-price span {
+    color: #000;
+    margin-left: 345px;
+}
+
+.total-price i {
+    margin-right: 15px
 }

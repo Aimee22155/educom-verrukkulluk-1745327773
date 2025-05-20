@@ -1,4 +1,3 @@
-{# Opnemen van de "Main" file #}
 {% extends "main.html.twig" %}
 
 {% block header %}
@@ -25,32 +24,30 @@
                 {% for ingredient in data.Ingredients %}
                     <div class="boodschap-item">
                         <div class="item-afbeelding">
-                            <img src="assets/img/{{ ingredient.plaatje }}" alt="{{ ingredient.name }}"> 
+                            <img src="assets/img/{{ ingredient.plaatje }}" alt="{{ ingredient.name }}">
                         </div>
                         <div class="item-details">
                             <h3 class="item-naam">{{ ingredient.name }}</h3>
                             <p class="item-beschrijving">{{ ingredient.description }}</p>
                         </div>
                         <div class="item-aantal">
-                            <input type="number" value="{{ ingredient.quantity }}" min="1">
+                            <input type="number" value="{{ 1 }}" min="1">
                         </div>
                         <div class="item-prijs">
-                            <span class="price"><i class="fa fa-euro-sign"></i> {{ ingredient.price|default('-') }}</span>
+                            <span class="price"><i class="fa fa-euro"></i> {{ ingredient.price|number_format(2, ',', '.')|default('-') }}</span>
                         </div>
                         <div class="item-acties">
-                            <button aria-label="Toevoegen aan lijst"><span style="font-size: 1.5em;">✅</span></button>
-                            <button aria-label="Verwijderen"><span style="font-size: 1.5em;">🗑️</span></button>
+                            <button><i class="fa fa-plus"></i></button>
+                            <button><i class="fa fa-trash"></i></button>
                         </div>
                     </div>
                 {% endfor %}
                 <div class="total-price">
                     <h2 class="Total">Total</h2>
-                    <div class="price">€ {{ ingredient.quantity * ingredient.price }}</div>
-                <div class="item-acties"><button aria-label="Verwijderen"><span style="font-size: 1.5em;">🗑️</span></button></div>
+                    <span class="price"><i class="fa fa-euro"></i> {{0}}</span>
+                    <div class="item-acties"><button><i class="fa fa-trash"></i></button></div>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
-
-

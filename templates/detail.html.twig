@@ -43,7 +43,6 @@
                         <span class="label"><h3>Keuken</h3></span> <span class="value">{{ dish.Kitchen.description|default('-') }}</span>
                         <span class="label type-label"><h3>Type</h3></span> <span class="value">{{ dish.Type.description|default('-') }}</span>
                     </div>
-                    <p class="short-description">{{ dish.short_description }}</p>
                     <p class="long-description">{{ dish.long_description }}</p>
                     <div class= "footer_card" >
                         <div class="smullenbtn">
@@ -58,13 +57,13 @@
         </div>   
         <div class="col-md-12">
             <div class="tabs">
-                <input type="radio" id="ingredients" name="tabs" checked>
+                <input type="radio" id="ingredients" name="tabs">
                 <label for="ingredients"><h4>Ingredients</h4></label>
 
                 <input type="radio" id="preparation" name="tabs">
                 <label for="preparation"><h4>Preparation</h4></label>
 
-                <input type="radio" id="notes" name="tabs">
+                <input type="radio" id="notes" name="tabs" checked>
                 <label for="notes"><h4>Comments</h4></label>
 
                 <div id="content-ingredients" class="tab-content">
@@ -98,12 +97,12 @@
                     <ul>
                         {% for comment in dish.Comments.comments %}
                             <li>
-                                {# <div class="Plaatje user">
-                                    <img src="..." alt="{{ ... }}"> 
-                                </div> #}
+                                <div class="Plaatje_user">
+                                    <img src="assets/img/{{ comment.user_image }}" alt="{{ comment.user_name }}"> 
+                                </div>
                                 {{ comment.textfield }} 
-                                ({% if comment.User.user_name is defined and comment.User.user_name is not empty %}
-                                    {{ comment.User.user_name }}
+                                ({% if comment.user_name is defined and comment.user_name is not empty %}
+                                    {{ comment.user_name }}
                                 {% else %}
                                     Gast
                                 {% endif %})

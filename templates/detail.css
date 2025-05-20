@@ -289,3 +289,17 @@ li {
     position: absolute;
     left: -40px;
 }
+
+#content-notes li {
+    display: flex;
+    align-items: center;
+}
+
+
+#content-notes .Plaatje_user img {
+   width: 90px;
+   height: auto;
+   border: 3px solid #eb8d1f;
+   border-radius: 50%;
+   align-items: center;
+}

@@ -18,19 +18,19 @@ class DishInfo {
     
     public function selectDishInfo($dish_id, $record_type) {
         $dish_info = [
-        'preparation_steps' => [],
-        'rating' => [],
-        'comments' => [],
-        'favorites' => []
+            'preparation_steps' => [],
+            'rating' => [],
+            'comments' => [],
+            'favorites' => []
         ];
-        
-        $sql = "SELECT * FROM dish_info 
-                WHERE dish_id = $dish_id 
+
+        $sql = "SELECT * FROM dish_info
+                WHERE dish_id = $dish_id
                 AND record_type = '$record_type'
                 ORDER BY numberfield";
-    
+
         $result = mysqli_query($this->connection, $sql);
-    
+
         if ($result) {
             while ($row = mysqli_fetch_assoc($result)) {
                 switch ($row['record_type']) {
@@ -41,8 +41,22 @@ class DishInfo {
                         $dish_info['rating'][] = $row;
                         break;
                     case 'C':
+                        if (isset($row['user_id'])) {
+                            // Controleer of er een 'user_id' aanwezig is bij een commentaar.
+                            $user = $this->user->selectUser($row['user_id']);
+                            // haal gebruikersinformatie op
+                            if ($user) {
+                                // Controleer of er een gebruiker met dat ID bestaat.
+                                $row['user_name'] = $user['user_name'];
+                                // Voeg de 'user_name' toe aan array
+                                if (isset($user['image'])) {
+                                    $row['user_image'] = $user['image'];
+                                    // Voeg de 'image' van de gebruiker toe aan de array
+                                }
+                            }
+                        }
                         $dish_info['comments'][] = $row;
-                        // loop user_id/user_name
+                        // Voeg de commentaar-rij toe aan de 'comments'-array binnen de '$dish_info'-array.
                         break;
                     case 'F':
                         $dish_info['favorites'][] = $row;
@@ -50,12 +64,12 @@ class DishInfo {
                 }
             }
         }
-    
+
         return $dish_info;
     }
             
-        // Verwijder een favoriet
-        public function deleteFavorite($dish_id, $user_id, $date) {
+    // Verwijder een favoriet
+    public function deleteFavorite($dish_id, $user_id, $date) {
         $sql = "delete from dish_info 
                 where record_type = 'F' and dish_id = $dish_id and user_id = $user_id and date = $date";
         $result = mysqli_query($this->connection, $sql);
