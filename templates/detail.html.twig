@@ -29,22 +29,24 @@
                     </div>
                     <div class="dish_header">
                         <h2>{{ dish.title }}</h2>
-                        <div class="rating">
-                            {% for i in 1..5 %}
-                                {% if i <= (dish.Rating|default(0)) %}
-                                    <span class="star filled"><i class="fa fa-star"></i></span>
-                                {% else %}
-                                    <span class="star"><i class="fa fa-star"></i></span>
-                                {% endif %}
-                            {% endfor %}
+                        {# rating! #}
+                        <div class="ster">
+                            <div class="rating interactive-rating">
+                                {% for i in 1..5 %}
+                                    <span class="star" data-value="{{ i }}"><i class="fa fa-star"></i></span>
+                                {% endfor %}
+                            </div>
+                            <div id="rating-message"></div>
                         </div>
                     </div>
                     <div class="details-row">
-                        <span class="label"><h3>Keuken</h3></span> <span class="value">{{ dish.Kitchen.description|default('-') }}</span>
-                        <span class="label type-label"><h3>Type</h3></span> <span class="value">{{ dish.Type.description|default('-') }}</span>
+                        <span class="label"><h3>Keuken</h3></span>
+                        <span class="value">{{ dish.Kitchen.description|default('-') }}</span>
+                        <span class="label type-label"><h3>Type</h3></span>
+                        <span class="value">{{ dish.Type.description|default('-') }}</span>
                     </div>
                     <p class="long-description">{{ dish.long_description }}</p>
-                    <div class= "footer_card" >
+                    <div class="footer_card">
                         <div class="smullenbtn">
                             <a href="indexF.php?action=grocery_list&dish_id={{ dish.id }}" class="smullen-button">Op Lijst</a>
                         </div>
@@ -54,16 +56,16 @@
                     </div>
                 </div>
             </div>
-        </div>   
+        </div>
         <div class="col-md-12">
             <div class="tabs">
-                <input type="radio" id="ingredients" name="tabs">
+                <input type="radio" id="ingredients" name="tabs" checked>
                 <label for="ingredients"><h4>Ingredients</h4></label>
 
                 <input type="radio" id="preparation" name="tabs">
                 <label for="preparation"><h4>Preparation</h4></label>
 
-                <input type="radio" id="notes" name="tabs" checked>
+                <input type="radio" id="notes" name="tabs">
                 <label for="notes"><h4>Comments</h4></label>
 
                 <div id="content-ingredients" class="tab-content">
@@ -71,15 +73,16 @@
                         {% for ingredient in dish.Ingredients %}
                             <li>
                                 <div class="plaatje">
-                                    <img src="assets/img/{{ ingredient.plaatje }}" alt="{{ ingredient.name }}"> 
+                                    <img src="assets/img/{{ ingredient.plaatje }}" alt="{{ ingredient.name }}">
                                 </div>
                                 <div class="ingredient_txt">
-                                    <h3> {{ ingredient.name }}</h3>
-                                    <p> 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' </p>
+                                    <h3>{{ ingredient.name }}</h3>
+                                    <p>'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'</p>
                                     <div class="hoeveelheid">
-                                        <H4> Hoeveelheid:</H4> <p> {{ ingredient.quantity }} {{ ingredient.unit|default('') }}</p>
+                                        <h4>Hoeveelheid:</h4>
+                                        <p>{{ ingredient.quantity }} {{ ingredient.unit|default('') }}</p>
                                     </div>
-                                </div> 
+                                </div>
                             </li>
                         {% endfor %}
                     </ul>
@@ -98,66 +101,98 @@
                         {% for comment in dish.Comments.comments %}
                             <li>
                                 <div class="Plaatje_user">
-                                    <img src="assets/img/{{ comment.user_image }}" alt="{{ comment.user_name }}"> 
+                                    <img src="assets/img/{{ comment.user_image }}" alt="{{ comment.user_name }}">
                                 </div>
-                                {{ comment.textfield }} 
-                                ({% if comment.user_name is defined and comment.user_name is not empty %}
-                                    {{ comment.user_name }}
-                                {% else %}
-                                    Gast
-                                {% endif %})
+                                <div class="comment_text">
+                                    <h3>{{ comment.user_name }}</h3>
+                                    <div class="comment_para">
+                                        <p>{{ comment.textfield }}</p>
+                                    </div>
+                                </div>
                             </li>
                         {% endfor %}
                     </ul>
                 </div>
-                
             </div>
         </div>
     </div>
 
     <script>
+        // rating!
         document.addEventListener('DOMContentLoaded', () => {
-            // Wacht tot de DOM (Document Object Model) volledig geladen is.
-            const heart = document.getElementById('favorite-heart');
-            // Haalt het HTML-element met de ID 'favorite-heart' op.
+            const stars = document.querySelectorAll('.interactive-rating .star');
+            const ratingMessage = document.getElementById('rating-message');
             const dishId = '{{ dish.id }}';
-            // Definieert de ID van het huidige gerecht.
-            const storageKey = 'favorite_dishes';
-            // Definieert de sleutel die gebruikt wordt om de favoriete gerechten op te slaan in de lokale opslag van de browser (localStorage).
 
-            // Laad favorieten uit localStorage
-            let favorites = JSON.parse(localStorage.getItem(storageKey)) || [];
-            // Probeert de opgeslagen favoriete gerechten op te halen uit de localStorage.
-            // JSON.parse() converteert de string die is opgeslagen terug naar een JavaScript array.
-            // Als er niets is opgeslagen onder de 'storageKey', dan wordt er een lege array ([]) gebruikt.
-
-            // Controleer of dit gerecht favoriet is en update het icoon
-            if (favorites.includes(dishId)) {
-                heart.classList.remove('fa-heart-o');
-                heart.classList.add('fa-heart');
+            // Functie om sterren te vullen op basis van gemiddelde
+            function fillStars(average) {
+                stars.forEach(star => {
+                    const val = parseInt(star.dataset.value);
+                    if (val <= average) {
+                        star.classList.add('filled');
+                    } else {
+                        star.classList.remove('filled');
+                    }
+                });
             }
 
-            heart.addEventListener('click', () => {
-                // Voegt een event listener toe aan het 'heart' element dat reageert op een klik.
-                if (favorites.includes(dishId)) {
-                    favorites = favorites.filter(id => id !== dishId);
-                    // Filtert de 'favorites' array om alle IDs te behouden behalve de ID van het huidige gerecht.
-                    heart.classList.remove('fa-heart');
-                    // Verwijdert de CSS-klasse voor het gevulde hart.
-                    heart.classList.add('fa-heart-o');
-                    // Voegt de CSS-klasse toe voor het lege hart.
+            // Ophalen huidig gemiddelde rating
+            function fetchAverageRating() {
+                fetch(`indexF.php?action=rating_actions&request_type=average&item_id=${dishId}`)
+                    .then(response => {
+                        console.log('Response van fetchAverageRating:', response);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Data van fetchAverageRating:', data);
+                        if (data.success) {
+                            console.log('Type van data.average:', typeof data.average); // Voeg dit toe
+                            const average = parseFloat(data.average);
+                            fillStars(Math.round(average));
+                            ratingMessage.textContent = ``;
+                        } else {
+                            console.error('Fout bij ophalen gemiddelde:', data.error);
+                            ratingMessage.textContent = 'Kon de gemiddelde beoordeling niet ophalen.';
+                        }
+                    });
+            }
+            // Initieel ophalen van de gemiddelde rating
+            fetchAverageRating();
 
-                } else {
-                    favorites.push(dishId);
-                    // Voegt de ID van het huidige gerecht toe aan de 'favorites' array.
-                    heart.classList.remove('fa-heart-o');
-                    // Verwijdert de CSS-klasse voor het lege hart.
-                    heart.classList.add('fa-heart');
-                    // Voegt de CSS-klasse toe voor het gevulde hart.
-                }
-                localStorage.setItem(storageKey, JSON.stringify(favorites));
-                // Slaat de bijgewerkte 'favorites' array op in de localStorage.
-                // JSON.stringify() converteert de JavaScript array naar een string die opgeslagen kan worden.
+            // Klik-event op sterren
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const rating = star.dataset.value;
+
+                    fetch(`indexF.php?action=rating_actions`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            type: 'rate',
+                            item_id: dishId,
+                            rating: rating
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const ratingGiven = parseInt(star.dataset.value); // De geklikte rating
+                            fillStars(ratingGiven); // Vul de sterren direct met de gegeven rating
+                            ratingMessage.textContent = `Je hebt ${ratingGiven} ster(ren) gegeven. Bedankt!`;
+                            setTimeout(() => {
+                                fetchAverageRating(); // Update het gemiddelde na een korte vertraging
+                            }, 2000); // Wacht 2 seconden voordat het gemiddelde weer wordt getoond
+                        } else {
+                            ratingMessage.textContent = 'Er is iets misgegaan bij het opslaan van je beoordeling.';
+                            console.error('Fout bij opslaan rating:', data.error);
+                        }
+                    })
+                    .catch(() => {
+                        ratingMessage.textContent = 'Netwerkfout, probeer het opnieuw.';
+                    });
+                });
             });
         });
     </script>

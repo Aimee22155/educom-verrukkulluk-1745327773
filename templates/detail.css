@@ -67,9 +67,19 @@
     margin-right: 10px;
 }
 
-.rating {
-    color: #fca01f;
-    font-size: 1.2em;
+.ster {
+    cursor: pointer;
+}
+
+.star  {
+  font-size: 30px;
+  color: gray;
+  cursor: pointer;
+  user-select: none;  
+}
+
+.star.filled {
+  color: gold;
 }
 
 .details-row {
@@ -273,7 +283,6 @@ li {
     align-items: center;
 }
 
-
 #content-preparation ol li::before {
     content: counter(list-item);
     counter-increment: list-item; 
@@ -291,15 +300,34 @@ li {
 }
 
 #content-notes li {
-    display: flex;
     align-items: center;
 }
-
 
 #content-notes .Plaatje_user img {
    width: 90px;
    height: auto;
    border: 3px solid #eb8d1f;
    border-radius: 50%;
-   align-items: center;
 }
+
+#content-notes .comment_text {
+    align-items: center;
+}
+
+#content-notes h3 {
+    color:#6e8722;
+    margin-bottom: 0px;
+}
+
+#content-notes .comment_para {
+    display: flex;
+    align-items: center;
+}
+
+#content-notes p {
+    font: 'arial, sans-serif';
+    font-size: 14px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+

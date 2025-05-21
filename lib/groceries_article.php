@@ -54,7 +54,7 @@ class Grocery_list {
 
     //Article toevoegen
     private function addArticle($user_id, $article_id, $name, $unit, $quantity) {
-        $sql = "INSERT INTO groceries_list (user_id, article_id, name, unit, total_quantity)
+        $sql = "INSERT INTO groceries_list (user_id, article_id, article_name, unit, total_quantity)
                 VALUES ($user_id, $article_id, '$name', '$unit', $quantity)";
         mysqli_query($this->connection, $sql);
     }
