@@ -118,52 +118,51 @@
     </div>
 
     <script>
-        // rating!
+        // === rating === //
+        // Wacht tot de pagina geladen is
         document.addEventListener('DOMContentLoaded', () => {
+            // Selecteer alle ster-elementen
             const stars = document.querySelectorAll('.interactive-rating .star');
+            // Selecteer het element waar het beoordelingsbericht komt
             const ratingMessage = document.getElementById('rating-message');
+            // Haal het ID van het gerecht op (wordt vanuit de backend ingevoegd)
             const dishId = '{{ dish.id }}';
 
-            // Functie om sterren te vullen op basis van gemiddelde
             function fillStars(average) {
                 stars.forEach(star => {
-                    const val = parseInt(star.dataset.value);
-                    if (val <= average) {
-                        star.classList.add('filled');
-                    } else {
-                        star.classList.remove('filled');
-                    }
+                    // Haal de waarde van de ster op
+                    const value = parseInt(star.dataset.value);
+                    // Voeg de 'filled' klasse toe als de sterwaarde kleiner of gelijk is aan het gemiddelde, anders verwijderen.
+                    star.classList.toggle('filled', value <= average);
                 });
             }
 
-            // Ophalen huidig gemiddelde rating
             function fetchAverageRating() {
                 fetch(`indexF.php?action=rating_actions&request_type=average&item_id=${dishId}`)
-                    .then(response => {
-                        console.log('Response van fetchAverageRating:', response);
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
-                        console.log('Data van fetchAverageRating:', data);
-                        if (data.success) {
-                            console.log('Type van data.average:', typeof data.average); // Voeg dit toe
-                            const average = parseFloat(data.average);
-                            fillStars(Math.round(average));
-                            ratingMessage.textContent = ``;
+                        if (data.success && typeof data.average !== 'undefined' && data.average !== null) {
+                            // Rond het gemiddelde af en vul de sterren
+                            fillStars(Math.round(parseFloat(data.average)));
+                            ratingMessage.textContent = '';
                         } else {
-                            console.error('Fout bij ophalen gemiddelde:', data.error);
+                            console.error('Fout bij ophalen gemiddelde:', data ? data.error : 'Onbekende fout');
                             ratingMessage.textContent = 'Kon de gemiddelde beoordeling niet ophalen.';
                         }
+                    })
+                    .catch(() => {
+                        ratingMessage.textContent = 'Netwerkfout bij ophalen gemiddelde.';
                     });
             }
-            // Initieel ophalen van de gemiddelde rating
+
+            // Laad initieel de gemiddelde rating
             fetchAverageRating();
 
-            // Klik-event op sterren
+            // Voeg een click-event listener toe aan elke ster
             stars.forEach(star => {
                 star.addEventListener('click', () => {
                     const rating = star.dataset.value;
-
+                    // Stuur de nieuwe beoordeling naar de server
                     fetch(`indexF.php?action=rating_actions`, {
                         method: 'POST',
                         headers: {
@@ -178,12 +177,12 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            const ratingGiven = parseInt(star.dataset.value); // De geklikte rating
-                            fillStars(ratingGiven); // Vul de sterren direct met de gegeven rating
+                            const ratingGiven = parseInt(star.dataset.value);
+                            // Toon direct de gegeven rating
+                            fillStars(ratingGiven);
                             ratingMessage.textContent = `Je hebt ${ratingGiven} ster(ren) gegeven. Bedankt!`;
-                            setTimeout(() => {
-                                fetchAverageRating(); // Update het gemiddelde na een korte vertraging
-                            }, 2000); // Wacht 2 seconden voordat het gemiddelde weer wordt getoond
+                            // Update het gemiddelde na een korte pauze
+                            setTimeout(fetchAverageRating, 2000);
                         } else {
                             ratingMessage.textContent = 'Er is iets misgegaan bij het opslaan van je beoordeling.';
                             console.error('Fout bij opslaan rating:', data.error);

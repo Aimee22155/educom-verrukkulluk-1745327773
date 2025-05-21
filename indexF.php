@@ -4,12 +4,6 @@ require_once("./vendor/autoload.php");
 
 $loader = new \Twig\Loader\FilesystemLoader("./templates");
 
-// VOOR PRODUCTIE:
-// In productie gebruik je caching voor betere performance
-// $twig = new \Twig\Environment($loader, ["cache" => "./cache/cc"]);
-
-// VOOR DEVELOPMENT:
-// Debugmodus aanzetten en geen caching om makkelijker te kunnen ontwikkelen
 $twig = new \Twig\Environment($loader, ["debug" => true ]);
 $twig->addExtension(new \Twig\Extension\DebugExtension());
 
@@ -38,10 +32,10 @@ $action = isset($_GET["action"]) ? $_GET["action"] : "homepage";
 
 // Stel een default template in
 $template = 'homepage.html.twig';
-$title = "Verrukkulluk"; // Een default titel
+$title = "Verrukkulluk";
 
 // functions voor javascript
-// Functie om een rating op te slaan (in dish_info tabel)
+// Rating op te slaan 
 function saveRating($mysqli, $itemId, $rating) {
     $sql = "INSERT INTO dish_info (record_type, dish_id, user_id, date, numberfield) VALUES ('R', ?, NULL, NOW(), ?)";
     $stmt = $mysqli->prepare($sql);
@@ -49,7 +43,7 @@ function saveRating($mysqli, $itemId, $rating) {
     return $stmt->execute();
 }
 
-// Functie om het gemiddelde cijfer op te halen (uit dish_info tabel)
+// Gemiddelde cijfer op halen
 function getAverageRating($mysqli, $itemId) {
     $sql = "SELECT AVG(numberfield) AS average FROM dish_info WHERE record_type = 'R' AND dish_id = ?";
     $stmt = $mysqli->prepare($sql);
@@ -85,15 +79,19 @@ switch($action) {
     }
 
     case "rating_actions": {
-        // Afhandeling van het opslaan van een rating
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST === []) {
+        // OPSLAAN VAN EEN RATING (VIA POST)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Lees de JSON data uit de request body
             $json_data = file_get_contents('php://input');
             $data = json_decode($json_data, true);
 
-            if ($data && isset($data['type']) && $data['type'] === 'rate' && isset($data['item_id']) && isset($data['rating'])) {
+            // Controleer of de benodigde velden aanwezig zijn in de JSON data
+            if (isset($data['type']) && $data['type'] === 'rate' && isset($data['item_id']) && isset($data['rating'])) {
+                // Haal de item ID en rating uit de data en cast ze naar integers
                 $itemId = (int)$data['item_id'];
                 $rating = (int)$data['rating'];
 
+                // Sla de rating op in de database
                 if (saveRating($connection, $itemId, $rating)) {
                     $average = getAverageRating($connection, $itemId);
                     echo json_encode(['success' => true, 'average' => $average]);
@@ -102,26 +100,30 @@ switch($action) {
                 }
                 exit();
             } else {
+                // Als de POST data niet de verwachte structuur heeft, stuur een 400 Bad Request
                 http_response_code(400);
-                echo json_encode(['success' => false, 'error' => 'Ongeldige POST data voor raten.']);
+                echo json_encode(['success' => false, 'error' => 'Ongeldige POST data.']);
                 exit();
             }
         }
 
-        // Afhandeling van het ophalen van het gemiddelde (hier is geen user ID nodig)
+        // GEMIDDELDE RATING (VIA GET)
         if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['request_type']) && $_GET['request_type'] === 'average' && isset($_GET['item_id'])) {
+            // Haal het item ID uit de GET parameters en cast het naar een integer
             $itemId = (int)$_GET['item_id'];
+            // Haal de gemiddelde rating op
             $average = getAverageRating($connection, $itemId);
 
+            // Controleer of er een gemiddelde rating is gevonden
             if ($average !== null) {
                 echo json_encode(['success' => true, 'average' => $average]);
             } else {
-                echo json_encode(['success' => false, 'error' => 'Nog geen ratings voor dit gerecht.']);
+                echo json_encode(['success' => false, 'error' => 'Nog geen ratings voor dit item.']);
             }
             exit();
         }
 
-        // Als geen van de bovenstaande voorwaarden klopt
+        // ALS GEEN VAN DE BOVENSTAANDE VOORWAARDEN KLOPT
         http_response_code(400);
         echo json_encode(['success' => false, 'error' => 'Ongeldige rating actie.']);
         exit();
@@ -145,15 +147,10 @@ switch($action) {
 
 // Alleen de pagina renderen als de actie niet 'rating_actions' is
 if ($action !== 'rating_actions') {
-    // Laad het juiste Twig-template op basis van de geselecteerde actie
     $template = $twig->load($template);
 
-    // Render de HTML-pagina met de opgehaalde data en titel
     echo $template->render([
         "title" => $title,
         "data" => $data
     ]);
 }
-
-//url-detail= http://localhost/educom-verrukkulluk-1745327773/indexF.php?dish_id=4&action=detail
-//url-grocery_list= http://localhost/educom-verrukkulluk-1745327773/indexF.php?dish_id=4&action=grocery_list
