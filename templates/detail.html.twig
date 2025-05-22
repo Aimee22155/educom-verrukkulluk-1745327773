@@ -117,80 +117,86 @@
         </div>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         // === rating === //
-        // Wacht tot de pagina geladen is
-        document.addEventListener('DOMContentLoaded', () => {
-            // Selecteer alle ster-elementen
-            const stars = document.querySelectorAll('.interactive-rating .star');
-            // Selecteer het element waar het beoordelingsbericht komt
-            const ratingMessage = document.getElementById('rating-message');
-            // Haal het ID van het gerecht op (wordt vanuit de backend ingevoegd)
+        // Voer de volgende code pas uit nadat de hele detailpagina is geladen.
+        $(document).ready(function() {  
+            const stars = $('.interactive-rating .star');
+            const ratingMessage = $('#rating-message');
             const dishId = '{{ dish.id }}';
 
             function fillStars(average) {
-                stars.forEach(star => {
-                    // Haal de waarde van de ster op
-                    const value = parseInt(star.dataset.value);
-                    // Voeg de 'filled' klasse toe als de sterwaarde kleiner of gelijk is aan het gemiddelde, anders verwijderen.
-                    star.classList.toggle('filled', value <= average);
+                stars.each(function() {
+                    const star = $(this);
+                    // Haal de waarde van de ster op met jQuery's .data() methode
+                    const value = parseInt(star.data('value'));
+                    // Voeg de 'filled' klasse toe als de sterwaarde kleiner of gelijk is aan het gemiddelde,
+                    // anders verwijderen met jQuery's .toggleClass()
+                    star.toggleClass('filled', value <= average);
                 });
             }
 
+            // Functie om de gemiddelde beoordeling van de server op te halen met jQuery AJAX
             function fetchAverageRating() {
-                fetch(`indexF.php?action=rating_actions&request_type=average&item_id=${dishId}`)
-                    .then(response => response.json())
-                    .then(data => {
+                $.ajax({
+                    url: `indexF.php?action=rating_actions&request_type=average&item_id=${dishId}`,
+                    method: 'GET', 
+                    dataType: 'json', 
+
+                    // Callback-functie die wordt uitgevoerd bij een succesvolle response
+                    success: function(data) {
                         if (data.success && typeof data.average !== 'undefined' && data.average !== null) {
-                            // Rond het gemiddelde af en vul de sterren
                             fillStars(Math.round(parseFloat(data.average)));
-                            ratingMessage.textContent = '';
+                            ratingMessage.text('');
                         } else {
                             console.error('Fout bij ophalen gemiddelde:', data ? data.error : 'Onbekende fout');
-                            ratingMessage.textContent = 'Kon de gemiddelde beoordeling niet ophalen.';
+                            ratingMessage.text('Kon de gemiddelde beoordeling niet ophalen.');
                         }
-                    })
-                    .catch(() => {
-                        ratingMessage.textContent = 'Netwerkfout bij ophalen gemiddelde.';
-                    });
+                    },
+                    error: function() {
+                        ratingMessage.text('Netwerkfout bij ophalen gemiddelde.');
+                    }
+                });
             }
 
-            // Laad initieel de gemiddelde rating
+            // Laad initieel de gemiddelde rating wanneer de pagina geladen is
             fetchAverageRating();
 
-            // Voeg een click-event listener toe aan elke ster
-            stars.forEach(star => {
-                star.addEventListener('click', () => {
-                    const rating = star.dataset.value;
-                    // Stuur de nieuwe beoordeling naar de server
-                    fetch(`indexF.php?action=rating_actions`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            type: 'rate',
-                            item_id: dishId,
-                            rating: rating
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
+            // Voeg een click-event listener toe aan elke ster met jQuery's .on()
+            stars.on('click', function() {
+                const clickedStar = $(this); 
+                const rating = clickedStar.data('value'); 
+
+                // Stuur de nieuwe beoordeling naar de server met jQuery AJAX
+                $.ajax({
+                    url: `indexF.php?action=rating_actions`,
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' 
+                    },
+                    data: JSON.stringify({ 
+                        type: 'rate',
+                        item_id: dishId,
+                        rating: rating
+                    }),
+                    dataType: 'json', 
+
+                    // Callback-functie die wordt uitgevoerd bij een succesvolle response
+                    success: function(data) {
                         if (data.success) {
-                            const ratingGiven = parseInt(star.dataset.value);
-                            // Toon direct de gegeven rating
+                            const ratingGiven = parseInt(clickedStar.data('value'));
                             fillStars(ratingGiven);
-                            ratingMessage.textContent = `Je hebt ${ratingGiven} ster(ren) gegeven. Bedankt!`;
-                            // Update het gemiddelde na een korte pauze
+                            ratingMessage.text(`Je hebt ${ratingGiven} ster(ren) gegeven. Bedankt!`);
                             setTimeout(fetchAverageRating, 2000);
                         } else {
-                            ratingMessage.textContent = 'Er is iets misgegaan bij het opslaan van je beoordeling.';
+                            ratingMessage.text('Er is iets misgegaan bij het opslaan van je beoordeling.');
                             console.error('Fout bij opslaan rating:', data.error);
                         }
-                    })
-                    .catch(() => {
-                        ratingMessage.textContent = 'Netwerkfout, probeer het opnieuw.';
-                    });
+                    },
+                    error: function() {
+                        ratingMessage.text('Netwerkfout, probeer het opnieuw.');
+                    }
                 });
             });
         });
