@@ -142,22 +142,18 @@
 .heart-icon {
     margin-top: auto;
     margin-left: 20px;
-    font-size: 2em;              
-    color: #b31714;             
-    cursor: pointer;            
-    transition: color 0.3s ease; 
-    user-select: none;         
+    font-size: 2em;
+    color: #b31714;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    user-select: none;
 }
 
-/* Change color when filled heart */
+/* Stijl voor het gevulde hart */
 .heart-icon .fa-heart {
     color: #e63946;
 }
 
-/* Optional hover effect */
-.heart-icon:hover .fa-heart-o {
-    color: #b31714;
-}
 
 /* ---------- ALGEMENE STYLING VOOR TABS ---------- */
 

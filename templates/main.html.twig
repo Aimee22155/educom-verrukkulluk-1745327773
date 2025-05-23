@@ -21,162 +21,190 @@
 
 </head>
 <body>
-<div class="main-body">
-    <div class="container-fluid">
-        {# rij 1 #}
-        <div class="row header-row">
-            <div class="col-md-12">
-                <div class="header">
-                    {% block header %}
-                    {#  #}
-                    {% endblock %}
+    <div class="main-body">
+        <div class="container-fluid">
+            {# rij 1 #}
+            <div class="row header-row">
+                <div class="col-md-12">
+                    <div class="header">
+                        {% block header %}
+                        {#  #}
+                        {% endblock %}
 
-                    {# zoekbalk #}
-                    <div class="search-container">
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search">
-                            <button type="submit" class="searchbtn">🔍</button>
-                        </div>
-                    </div>
-
-                    {# menu #}
-                    <div class="menu">
-                        <div class="menu-trigger">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
+                        {# zoekbalk #}
+                        <div class="search-container">
+                            <div class="search-bar">
+                                <input type="text" placeholder="Search" id="ingredientSearch">
+                                <button type="submit" class="searchbtn">🔍</button>
+                            </div>
                         </div>
 
-                        <div class="dropdown">
-                            <div class="dropdown-inner">
-                                <div class="menu-logo">
-                                    <img src="assets/img/logo-v2.png" alt="Logo" />
-                                </div>
-                                <div class="menu-links">
-                                    <div><h2>Mijn Favorieten</h2></div>
-                                    <div><h2><a href="http://localhost/educom-verrukkulluk-1745327773/indexF.php?dish_id=4&action=grocery_list" target="_blank">Mijn boodschappenlijst</a></h2></div>
+                        {# menu #}
+                        <div class="menu">
+                            <div class="menu-trigger">
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                            </div>
+
+                            <div class="dropdown">
+                                <div class="dropdown-inner">
+                                    <div class="menu-logo">
+                                        <img src="assets/img/logo-v2.png" alt="Logo" />
+                                    </div>
+                                    <div class="menu-links">
+                                        <div><h2>Mijn Favorieten</h2></div>
+                                        <div><h2><a href="http://localhost/educom-verrukkulluk-1745327773/indexF.php?dish_id=4&action=grocery_list" target="_blank">Mijn boodschappenlijst</a></h2></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
-
-                </div>
-            </div>  
-        </div>
-
-        {# rij 2 #}
-        <div class="row content-row">
-            {# rij 2a agenda + login #}
-            <div class="col-md-4">
-                
-                <!-- Agenda -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="content">
-                        <div class="Agenda">
-                                <h2><img src="assets/img/verrukkulluk-agenda.png"/></h2>
-                                <div class="calendar-content">
-                                    <div class="calendar-icon">
-                                        <i class="fa fa-calendar"></i>
-                                        <div class="agenda-text">
-                                            <h3>Vegetarisch koken</h3>
-                                            <p>Een workshop vegetarisch koken, onder leiding van Gordon Ramsay.</p>
-                                        </div>
-                                    </div><br>
-                                </div>
-                                <div class="calendar-content">
-                                    <div class="calendar-icon">
-                                        <i class="fa fa-calendar"></i>
-                                        <div class="agenda-text">
-                                            <h3>Aziatisch koken</h3>
-                                            <p>Een workshop aziatisch koken, onder leiding van Gordon Ramsay.</p>
-                                        </div>
-                                    </div><br>
-                                </div>
-                                <div class="calendar-content">
-                                    <div class="calendar-icon">
-                                        <i class="fa fa-calendar"></i>
-                                        <div class="agenda-text">
-                                            <h3> 5 min koken</h3>
-                                            <p>Een workshop 5 min koken, onder leiding van Gordon Ramsay.</p>
-                                        </div>
-                                    </div><br>
-                                </div>
-                                <div class="calendar-content">
-                                    <div class="calendar-icon">
-                                        <i class="fa fa-calendar"></i>
-                                        <div class="agenda-text">
-                                            <h3> Gezond koken</h3>
-                                            <p>Een workshop gezond koken, onder leiding van Gordon Ramsay.</p>
-                                        </div>
-                                    </div><br>
-                                </div>
-                                <div class="calendar-content">
-                                    <div class="calendar-icon">
-                                        <i class="fa fa-calendar"></i>
-                                        <div class="agenda-text">
-                                            <h3> Glutenvrij koken</h3>
-                                            <p>Een workshop glutenvrij koken, onder leiding van Gordon Ramsay.</p>
-                                        </div>
-                                    </div><br>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Login -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="content">
-                            <div class="Login">
-                                <h2><img src="assets/img/verrukkulluk-login.png"/></h2>
-                                <form>
-                                <div class="login_text">
-                                    <label for="Email">Email</label><br>
-                                </div>
-                                <input type="text" id="Email" Email="Email"><br>
-                                <div class="login_text">
-                                    <label for="Password">Password</label><br>
-                                </div>
-                                <input type="password" id="Password" Password="Password"></form><br>
-                                <h3><button type="button">Login</button><h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                </div>  
             </div>
-        
-            {# rij 2b: main content vanuit child template #}
-            <div class="col-md-8">
-                    {% block content %}
-                    {# #}
-                    {% endblock %}
+
+            {# rij 2 #}
+            <div class="row content-row">
+                {# rij 2a agenda + login #}
+                <div class="col-md-4">
+                    
+                    <!-- Agenda -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="content">
+                            <div class="Agenda">
+                                    <h2><img src="assets/img/verrukkulluk-agenda.png"/></h2>
+                                    <div class="calendar-content">
+                                        <div class="calendar-icon">
+                                            <i class="fa fa-calendar"></i>
+                                            <div class="agenda-text">
+                                                <h3>Vegetarisch koken</h3>
+                                                <p>Een workshop vegetarisch koken, onder leiding van Gordon Ramsay.</p>
+                                            </div>
+                                        </div><br>
+                                    </div>
+                                    <div class="calendar-content">
+                                        <div class="calendar-icon">
+                                            <i class="fa fa-calendar"></i>
+                                            <div class="agenda-text">
+                                                <h3>Aziatisch koken</h3>
+                                                <p>Een workshop aziatisch koken, onder leiding van Gordon Ramsay.</p>
+                                            </div>
+                                        </div><br>
+                                    </div>
+                                    <div class="calendar-content">
+                                        <div class="calendar-icon">
+                                            <i class="fa fa-calendar"></i>
+                                            <div class="agenda-text">
+                                                <h3> 5 min koken</h3>
+                                                <p>Een workshop 5 min koken, onder leiding van Gordon Ramsay.</p>
+                                            </div>
+                                        </div><br>
+                                    </div>
+                                    <div class="calendar-content">
+                                        <div class="calendar-icon">
+                                            <i class="fa fa-calendar"></i>
+                                            <div class="agenda-text">
+                                                <h3> Gezond koken</h3>
+                                                <p>Een workshop gezond koken, onder leiding van Gordon Ramsay.</p>
+                                            </div>
+                                        </div><br>
+                                    </div>
+                                    <div class="calendar-content">
+                                        <div class="calendar-icon">
+                                            <i class="fa fa-calendar"></i>
+                                            <div class="agenda-text">
+                                                <h3> Glutenvrij koken</h3>
+                                                <p>Een workshop glutenvrij koken, onder leiding van Gordon Ramsay.</p>
+                                            </div>
+                                        </div><br>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Login -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="content">
+                                <div class="Login">
+                                    <h2><img src="assets/img/verrukkulluk-login.png"/></h2>
+                                    <form>
+                                    <div class="login_text">
+                                        <label for="Email">Email</label><br>
+                                    </div>
+                                    <input type="text" id="Email" name="Email"><br>
+                                    <div class="login_text">
+                                        <label for="Password">Password</label><br>
+                                    </div>
+                                    <input type="password" id="Password" name="Password"></form><br>
+                                    <h3><button type="button">Login</button></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            
+                {# rij 2b: main content vanuit child template #}
+                <div class="col-md-8">
+                        {% block content %}
+                        {# #}
+                        {% endblock %}
+                </div>
             </div>
-        </div>
-        
-        {# rij 3 #}
-        <div class="row footer-row"> 
-            <div class="col-md-12">
-                <div class="Footer">
-                    <img src="assets/img/verrukkulluk-pay-off.png" class="footer-logo" alt="Verrukkuluk Payoff" />
-                    <div class="contact-info">
-                        <img src="assets/img/verrukkulluk-contact.png" alt="Contact" />
-                        <div class="contact-details">
-                            <p>Verrukkuluk.nl<br>
-                            Poststraat 2b<br>
-                            Sittard<br>
-                            info@verrukkuluk.nl
-                            </p>
+            
+            {# rij 3 #}
+            <div class="row footer-row"> 
+                <div class="col-md-12">
+                    <div class="Footer">
+                        <img src="assets/img/verrukkulluk-pay-off.png" class="footer-logo" alt="Verrukkuluk Payoff" />
+                        <div class="contact-info">
+                            <img src="assets/img/verrukkulluk-contact.png" alt="Contact" />
+                            <div class="contact-details">
+                                <p>Verrukkuluk.nl<br>
+                                Poststraat 2b<br>
+                                Sittard<br>
+                                info@verrukkuluk.nl
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+    <script>
+        $(document).ready(function() {
+            const searchInput = $('#ingredientSearch');
+            const searchButton = $('.search-container .searchbtn');
+            const dishItems = $('.dish-item');
+
+            searchInput.on('keypress', function(event) {
+                if (event.which === 13) { // Enter
+                    searchButton.trigger('click');
+                }
+            });
+
+            searchButton.on('click', function(event) {
+                event.preventDefault();
+                const searchTerm = searchInput.val().toLowerCase();
+
+                dishItems.each(function() {
+                    const ingredients = $(this).attr('data-ingredients').toLowerCase();
+                    if (ingredients.includes(searchTerm)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide(); 
+                    }
+                });
+            });
+        });
+    </script>
+
 </body>
 </html>
 

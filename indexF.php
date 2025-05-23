@@ -7,21 +7,19 @@ $loader = new \Twig\Loader\FilesystemLoader("./templates");
 $twig = new \Twig\Environment($loader, ["debug" => true ]);
 $twig->addExtension(new \Twig\Extension\DebugExtension());
 
-// Laad de benodigde PHP-bestanden voor database en dataklassen
-require_once("lib/database.php");
-require_once("lib/dishes.php");
-require_once("lib/dish_info.php");
-require_once("lib/groceries_article.php");
-require_once("lib/ingredient.php");
-require_once("lib/article.php");
-require_once("lib/kitchen_type.php");
-require_once("lib/User.php");
-
-// Maak een database-object aan en verkrijg een verbinding
+// nodige files
+    require_once("lib/database.php");
+    require_once("lib/dishes.php");
+    require_once("lib/dish_info.php");
+    require_once("lib/groceries_article.php");
+    require_once("lib/ingredient.php");
+    require_once("lib/article.php");
+    require_once("lib/kitchen_type.php");
+    require_once("lib/User.php");
+   
 $db = new database();
 $connection = $db->getConnection();
 
-// Initialiseert een object van de Dishes-klasse, waarmee je recepten kunt ophalen
 $dish = new Dishes($connection);
 
 // Lees de URL-parameters in
@@ -35,23 +33,46 @@ $template = 'homepage.html.twig';
 $title = "Verrukkulluk";
 
 // functions voor javascript
-// Rating op te slaan 
 function saveRating($mysqli, $itemId, $rating) {
-    $sql = "INSERT INTO dish_info (record_type, dish_id, user_id, date, numberfield) VALUES ('R', ?, NULL, NOW(), ?)";
-    $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param("ii", $itemId, $rating);
-    return $stmt->execute();
+    $itemId = (int)$itemId;
+    $rating = (int)$rating;
+    $sql = "INSERT INTO dish_info (record_type, dish_id, user_id, date, numberfield) VALUES ('R', " . $itemId . ", NULL, NOW(), " . $rating . ")";
+    return $mysqli->query($sql);
 }
 
-// Gemiddelde cijfer op halen
 function getAverageRating($mysqli, $itemId) {
-    $sql = "SELECT AVG(numberfield) AS average FROM dish_info WHERE record_type = 'R' AND dish_id = ?";
-    $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param("i", $itemId);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $itemId = mysqli_real_escape_string($mysqli, $itemId);
+    $sql = "SELECT AVG(numberfield) AS average FROM dish_info WHERE record_type = 'R' AND dish_id = '" . $itemId . "'";
+    $result = $mysqli->query($sql);
     $row = $result->fetch_assoc();
     return $row['average'];
+}
+
+function saveFavorite($mysqli, $itemId) {
+    $itemId = mysqli_real_escape_string($mysqli, $itemId);
+
+    $sql_check = "SELECT COUNT(*) FROM dish_info WHERE record_type = 'F' AND dish_id = '" . $itemId . "'";
+    $result_check = $mysqli->query($sql_check);
+    $row_check = $result_check->fetch_row();
+
+    if ($row_check[0] > 0) {
+        $sql_delete = "DELETE FROM dish_info WHERE record_type = 'F' AND dish_id = '" . $itemId . "'";
+        $result_delete = $mysqli->query($sql_delete);
+        return ['success' => $result_delete, 'added' => false];
+    } else {
+        $sql_insert = "INSERT INTO dish_info (record_type, dish_id, date) VALUES ('F', '" . $itemId . "', NOW())";
+        $result_insert = $mysqli->query($sql_insert);
+        return ['success' => $result_insert, 'added' => true];
+    }
+}
+
+function isFavorite($mysqli, $itemId) {
+    $itemId = mysqli_real_escape_string($mysqli, $itemId);
+
+    $sql = "SELECT COUNT(*) FROM dish_info WHERE record_type = 'F' AND dish_id = '" . $itemId . "'";
+    $result = $mysqli->query($sql);
+    $row = $result->fetch_row();
+    return $row[0] > 0;
 }
 
 // Switch statement bepaalt welke pagina er wordt geladen op basis van 'action'
@@ -81,16 +102,13 @@ switch($action) {
     case "rating_actions": {
         // OPSLAAN VAN EEN RATING (VIA POST)
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Lees de JSON data uit de request body
             $json_data = file_get_contents('php://input');
             $data = json_decode($json_data, true);
 
             // Controleer of de benodigde velden aanwezig zijn in de JSON data
             if (isset($data['type']) && $data['type'] === 'rate' && isset($data['item_id']) && isset($data['rating'])) {
-                // Haal de item ID en rating uit de data en cast ze naar integers
                 $itemId = (int)$data['item_id'];
                 $rating = (int)$data['rating'];
-
                 // Sla de rating op in de database
                 if (saveRating($connection, $itemId, $rating)) {
                     $average = getAverageRating($connection, $itemId);
@@ -100,7 +118,6 @@ switch($action) {
                 }
                 exit();
             } else {
-                // Als de POST data niet de verwachte structuur heeft, stuur een 400 Bad Request
                 http_response_code(400);
                 echo json_encode(['success' => false, 'error' => 'Ongeldige POST data.']);
                 exit();
@@ -109,9 +126,7 @@ switch($action) {
 
         // GEMIDDELDE RATING (VIA GET)
         if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['request_type']) && $_GET['request_type'] === 'average' && isset($_GET['item_id'])) {
-            // Haal het item ID uit de GET parameters en cast het naar een integer
             $itemId = (int)$_GET['item_id'];
-            // Haal de gemiddelde rating op
             $average = getAverageRating($connection, $itemId);
 
             // Controleer of er een gemiddelde rating is gevonden
@@ -123,28 +138,58 @@ switch($action) {
             exit();
         }
 
-        // ALS GEEN VAN DE BOVENSTAANDE VOORWAARDEN KLOPT
         http_response_code(400);
         echo json_encode(['success' => false, 'error' => 'Ongeldige rating actie.']);
         exit();
         break;
     }
 
-    // case "favorites": {
-    //     $data = $dish->selectRecipeOrMore($dish_id, $user_id, $record_type);
-    //     $template = 'main.html.twig';
-    //     $title = "main pagina";
-    //     break;
-    // }
+    case "favorites_actions": {
+        // OPSLAAN/VERWIJDEREN VAN FAVORIET (VIA POST)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $json_data = file_get_contents('php://input');
+            $data = json_decode($json_data, true);
 
-    // case "search_bar": {
-    //     $data = $dish->selectRecipeOrMore($dish_id, $keyword);
-    //     $template = 'main.html.twig';
-    //     $title = "main pagina";
-    //     break;
-    // }
+            if (isset($data['type']) && $data['type'] === 'favorite' && isset($data['item_id'])) {
+                $itemId = (int)$data['item_id'];
+                $result = saveFavorite($connection, $itemId);
+                echo json_encode(['success' => $result['success'], 'added' => $result['added']]);
+                exit();
+            } else {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'error' => 'Ongeldige POST data voor favorieten.']);
+                exit();
+            }
+        }
+        
+        // CHECKEN OF GERECHT FAVORIET IS (VIA GET)
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['request_type']) && $_GET['request_type'] === 'check' && isset($_GET['item_id'])) {
+            $itemId = (int)$_GET['item_id'];
+            $is_fav = isFavorite($connection, $itemId);
+            echo json_encode(['success' => true, 'is_favorite' => $is_fav ? 1 : 0]);
+            exit();
+        }
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Ongeldige favorieten actie.']);
+        exit();
+        break;
+    }
+
+    case "search": {
+        $searchTerm = isset($_GET["query"]) ? $_GET["query"] : "";
+        if (!empty($searchTerm)) {
+            $data = $dish->searchDishesByIngredient($searchTerm);
+            $template = 'home.html.twig';
+            $title = "Zoekresultaten voor '" . htmlspecialchars($searchTerm) . "'";
+        } else {
+            // Als er geen zoekterm is, tonen we de homepage
+            $data = $dish->selectRecipeOrMore();
+            $template = 'home.html.twig';
+            $title = "Verrukkulluk";
+        }
+        break;
+    }
 }
-
 // Alleen de pagina renderen als de actie niet 'rating_actions' is
 if ($action !== 'rating_actions') {
     $template = $twig->load($template);

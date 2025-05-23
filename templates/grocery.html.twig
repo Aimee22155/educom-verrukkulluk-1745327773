@@ -22,32 +22,58 @@
             <div class="Groceries">
                 <h1>Groceries</h1>
                 {% for ingredient in data.Ingredients %}
-                    <div class="boodschap-item">
-                        <div class="item-afbeelding">
+                    <div class="grocery-item">
+                        <div class="item-image">
                             <img src="assets/img/{{ ingredient.plaatje }}" alt="{{ ingredient.name }}">
                         </div>
                         <div class="item-details">
-                            <h3 class="item-naam">{{ ingredient.name }}</h3>
-                            <p class="item-beschrijving">{{ ingredient.description }}</p>
+                            <h3 class="item-name">{{ ingredient.name }}</h3>
+                            <p class="item-description">{{ ingredient.description }}</p>
                         </div>
-                        <div class="item-aantal">
-                            <input type="number" value="{{ 1 }}" min="1">
+                        <div class="item-quantity">
+                            <input type="number" class="quantity-input" value="{{ 1 }}" min="1" data-price="{{ ingredient.price }}">
                         </div>
-                        <div class="item-prijs">
-                            <span class="price"><i class="fa fa-euro"></i> {{ ingredient.price|number_format(2, ',', '.')|default('-') }}</span>
+                        <div class="item-price">
+                            <span class="price item-total-price"><i class="fa fa-euro"></i> {{ ingredient.price|number_format(2, ',', '.')|default('-') }}</span>
                         </div>
-                        <div class="item-acties">
-                            <button><i class="fa fa-plus"></i></button>
-                            <button><i class="fa fa-trash"></i></button>
+                        <div class="item-actions">
+                            <button class="remove-item"><i class="fa fa-trash"></i></button>
                         </div>
                     </div>
                 {% endfor %}
                 <div class="total-price">
                     <h2 class="Total">Total</h2>
-                    <span class="price"><i class="fa fa-euro"></i> {{0}}</span>
-                    <div class="item-acties"><button><i class="fa fa-trash"></i></button></div>
+                    <span class="price total-amount"><i class="fa fa-euro"></i> 0.00</span>
+                    <div class="item-actions"><button><i class="fa fa-trash"></i></button></div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            function calculateTotal() {
+                let total = 0;
+                $(".grocery-item").each(function() {
+                    const quantityInput = $(this).find(".quantity-input");
+                    const itemTotalPriceSpan = $(this).find(".item-total-price");
+                    const unitPrice = parseFloat(quantityInput.data("price"));
+                    const quantity = parseInt(quantityInput.val());
+                    const itemTotal = unitPrice * quantity;
+                    itemTotalPriceSpan.html('<i class="fa fa-euro"></i> ' + itemTotal.toFixed(2).replace('.', ','));
+                    total += itemTotal;
+                });
+                $(".total-amount").html('<i class="fa fa-euro"></i> ' + total.toFixed(2).replace('.', ','));
+            }
+            $(".quantity-input").on("change", calculateTotal);
+
+            calculateTotal();
+
+            $(".remove-item").on("click", function() {
+                $(this).closest(".grocery-item").remove();
+                calculateTotal();
+            });
+        });
+    </script>
+
 {% endblock %}

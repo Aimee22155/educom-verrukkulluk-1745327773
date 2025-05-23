@@ -20,7 +20,7 @@
             {% for dish in pair %}
                 {% if dish %}
                     <div class="col-md-6">
-                        <div class="dish-item">
+                        <div class="dish-item" data-ingredients="{% for ingredient in dish.Ingredients %}{{ ingredient.name }}{% if not loop.last %} {% endif %}{% endfor %}">
                             <img src="assets/img/{{ dish.image }}" alt="{{ dish.title }}">
                             <div class="dish-content">
                                 <div class="dish-header">

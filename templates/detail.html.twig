@@ -50,7 +50,8 @@
                         <div class="smullenbtn">
                             <a href="indexF.php?action=grocery_list&dish_id={{ dish.id }}" class="smullen-button">Op Lijst</a>
                         </div>
-                        <div class="heart-icon">
+                        {# favorites! #}
+                        <div class="heart-icon interactive-favorite">
                             <i id="favorite-heart" class="fa fa-heart-o"></i>
                         </div>
                     </div>
@@ -117,11 +118,9 @@
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         // === rating === //
-        // Voer de volgende code pas uit nadat de hele detailpagina is geladen.
-        $(document).ready(function() {  
+        $(document).ready(function() {
             const stars = $('.interactive-rating .star');
             const ratingMessage = $('#rating-message');
             const dishId = '{{ dish.id }}';
@@ -129,29 +128,22 @@
             function fillStars(average) {
                 stars.each(function() {
                     const star = $(this);
-                    // Haal de waarde van de ster op met jQuery's .data() methode
                     const value = parseInt(star.data('value'));
-                    // Voeg de 'filled' klasse toe als de sterwaarde kleiner of gelijk is aan het gemiddelde,
-                    // anders verwijderen met jQuery's .toggleClass()
                     star.toggleClass('filled', value <= average);
                 });
             }
 
-            // Functie om de gemiddelde beoordeling van de server op te halen met jQuery AJAX
             function fetchAverageRating() {
                 $.ajax({
                     url: `indexF.php?action=rating_actions&request_type=average&item_id=${dishId}`,
-                    method: 'GET', 
-                    dataType: 'json', 
-
-                    // Callback-functie die wordt uitgevoerd bij een succesvolle response
+                    method: 'GET',
+                    dataType: 'json',
                     success: function(data) {
                         if (data.success && typeof data.average !== 'undefined' && data.average !== null) {
                             fillStars(Math.round(parseFloat(data.average)));
                             ratingMessage.text('');
                         } else {
                             console.error('Fout bij ophalen gemiddelde:', data ? data.error : 'Onbekende fout');
-                            ratingMessage.text('Kon de gemiddelde beoordeling niet ophalen.');
                         }
                     },
                     error: function() {
@@ -160,42 +152,100 @@
                 });
             }
 
-            // Laad initieel de gemiddelde rating wanneer de pagina geladen is
             fetchAverageRating();
 
-            // Voeg een click-event listener toe aan elke ster met jQuery's .on()
             stars.on('click', function() {
-                const clickedStar = $(this); 
-                const rating = clickedStar.data('value'); 
+                const clickedStar = $(this);
+                const rating = clickedStar.data('value');
 
-                // Stuur de nieuwe beoordeling naar de server met jQuery AJAX
                 $.ajax({
                     url: `indexF.php?action=rating_actions`,
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json' 
+                        'Content-Type': 'application/json'
                     },
-                    data: JSON.stringify({ 
+                    data: JSON.stringify({
                         type: 'rate',
                         item_id: dishId,
                         rating: rating
                     }),
-                    dataType: 'json', 
-
-                    // Callback-functie die wordt uitgevoerd bij een succesvolle response
+                    dataType: 'json',
                     success: function(data) {
                         if (data.success) {
                             const ratingGiven = parseInt(clickedStar.data('value'));
-                            fillStars(ratingGiven);
+                            // Hier laden we opnieuw het gemiddelde om de sterren te updaten
+                            fetchAverageRating();
                             ratingMessage.text(`Je hebt ${ratingGiven} ster(ren) gegeven. Bedankt!`);
-                            setTimeout(fetchAverageRating, 2000);
+                            setTimeout(function() {
+                                ratingMessage.text('');
+                            }, 3000);
                         } else {
-                            ratingMessage.text('Er is iets misgegaan bij het opslaan van je beoordeling.');
                             console.error('Fout bij opslaan rating:', data.error);
                         }
                     },
                     error: function() {
                         ratingMessage.text('Netwerkfout, probeer het opnieuw.');
+                    }
+                });
+            });
+        });
+
+        // === favorites === //
+        $(document).ready(function() {
+            const favoriteContainer = $('.interactive-favorite');
+            const heartIcon = $('#favorite-heart');
+            const dishId = '{{dish.id}}';
+
+            function fillHeart(isFavorite) {
+                if (isFavorite) {
+                    heartIcon.removeClass('fa-heart-o').addClass('fa-heart');
+                } else {
+                    heartIcon.removeClass('fa-heart').addClass('fa-heart-o');
+                }
+            }
+
+            function fetchFavoriteStatus() {
+                $.ajax({
+                    url: `indexF.php?action=favorites_actions&request_type=check&item_id=${dishId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.success && typeof data.is_favorite !== 'undefined') {
+                            fillHeart(!!parseInt(data.is_favorite));
+                        } else {
+                            console.error('Fout bij ophalen favorieten status:', data ? data.error : 'Onbekende fout');
+                        }
+                    },
+                    error: function() {
+                        console.error('Netwerkfout bij ophalen favorieten status.');
+                    }
+                });
+            }
+
+            fetchFavoriteStatus();
+
+            favoriteContainer.on('click', function() {
+                $.ajax({
+                    url: 'indexF.php?action=favorites_actions',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    data: JSON.stringify({
+                        type: 'favorite',
+                        item_id: dishId
+                    }),
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.success) {
+                            fetchFavoriteStatus();
+                            console.log('Favorieten status gewijzigd.');
+                        } else {
+                            console.error('Fout bij opslaan favoriet:', data.error);
+                        }
+                    },
+                    error: function() {
+                        console.error('Netwerkfout bij opslaan favoriet.');
                     }
                 });
             });
