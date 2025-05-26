@@ -180,12 +180,12 @@ switch($action) {
         if (!empty($searchTerm)) {
             $data = $dish->searchDishesByIngredient($searchTerm);
             $template = 'home.html.twig';
-            $title = "Zoekresultaten voor '" . htmlspecialchars($searchTerm) . "'";
+            $title = "homepage";
         } else {
             // Als er geen zoekterm is, tonen we de homepage
             $data = $dish->selectRecipeOrMore();
             $template = 'home.html.twig';
-            $title = "Verrukkulluk";
+            $title = "homepage";
         }
         break;
     }

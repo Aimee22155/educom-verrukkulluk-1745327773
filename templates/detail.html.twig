@@ -141,7 +141,6 @@
                     success: function(data) {
                         if (data.success && typeof data.average !== 'undefined' && data.average !== null) {
                             fillStars(Math.round(parseFloat(data.average)));
-                            ratingMessage.text('');
                         } else {
                             console.error('Fout bij ophalen gemiddelde:', data ? data.error : 'Onbekende fout');
                         }
@@ -173,12 +172,12 @@
                     success: function(data) {
                         if (data.success) {
                             const ratingGiven = parseInt(clickedStar.data('value'));
-                            // Hier laden we opnieuw het gemiddelde om de sterren te updaten
+                            // laad gemiddelde voor invulling sterren
                             fetchAverageRating();
                             ratingMessage.text(`Je hebt ${ratingGiven} ster(ren) gegeven. Bedankt!`);
                             setTimeout(function() {
                                 ratingMessage.text('');
-                            }, 3000);
+                            }, 6000);
                         } else {
                             console.error('Fout bij opslaan rating:', data.error);
                         }
