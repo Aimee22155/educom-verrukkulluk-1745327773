@@ -179,12 +179,11 @@ switch($action) {
         $searchTerm = isset($_GET["query"]) ? $_GET["query"] : "";
         if (!empty($searchTerm)) {
             $data = $dish->searchDishesByIngredient($searchTerm);
-            $template = 'home.html.twig';
-            $title = "homepage";
+            $template = 'homepage.html.twig';
+            $title = "Search Results";
         } else {
-            // Als er geen zoekterm is, tonen we de homepage
             $data = $dish->selectRecipeOrMore();
-            $template = 'home.html.twig';
+            $template = 'homepage.html.twig';
             $title = "homepage";
         }
         break;
