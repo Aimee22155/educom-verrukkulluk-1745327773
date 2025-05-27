@@ -2,7 +2,7 @@
 
 require_once("lib/database.php");
 require_once("lib/article.php");
-require_once("lib/User.php");
+require_once("lib/user.php");
 require_once("lib/kitchen_type.php");
 require_once("lib/ingredient.php");
 require_once("lib/dish_info.php");

@@ -15,7 +15,7 @@ $twig->addExtension(new \Twig\Extension\DebugExtension());
     require_once("lib/ingredient.php");
     require_once("lib/article.php");
     require_once("lib/kitchen_type.php");
-    require_once("lib/User.php");
+    require_once("lib/user.php");
    
 $db = new database();
 $connection = $db->getConnection();
