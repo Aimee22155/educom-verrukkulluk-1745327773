@@ -1,155 +1,101 @@
 <?php
 
-require_once("./vendor/autoload.php");
+// functions voor javascript
+function saveRating($pdo, $itemId, $rating) {
+    $sql = "INSERT INTO dish_info 
+            (record_type, dish_id, user_id, date, numberfield) 
+            VALUES (:record_type, :dish_id, :user_id, NOW(), :numberfield)";
+    $stmt = $pdo->prepare($sql);
 
-$loader = new \Twig\Loader\FilesystemLoader("./templates");
-$twig = new \Twig\Environment($loader, ["debug" => true ]);
-$twig->addExtension(new \Twig\Extension\DebugExtension());
+    $params = [
+        ':record_type' => 'R',
+        ':dish_id'     => $itemId,
+        ':user_id'     => null,
+        ':numberfield' => $rating
+    ];
 
-// nodige files
-    require_once("lib/database.php");
-    require_once("lib/dishes.php");
-    require_once("lib/dish_info.php");
-    require_once("lib/groceries_article.php");
-    require_once("lib/ingredient.php");
-    require_once("lib/article.php");
-    require_once("lib/kitchen_type.php");
-    require_once("lib/user.php");
-    require_once("JS_Functions.php");
-
-$db = new database();
-$connection = $db->getConnection();
-
-$dish = new Dishes($connection);
-// Lees de URL-parameters in
-$dish_id = isset($_GET["dish_id"]) ? $_GET["dish_id"] : "";
-// Bepaal de actie die moet worden uitgevoerd op basis van de 'action' parameter
-$action = isset($_GET["action"]) ? $_GET["action"] : "homepage";
-// Stel een default template in
-$template = 'homepage.html.twig';
-$title = "Verrukkulluk";
-
-
-// Switch statement bepaalt welke pagina er wordt geladen op basis van 'action'
-switch($action) {
-
-    case "homepage": {
-        $data = $dish->selectRecipeOrMore();
-        $template = 'homepage.html.twig';
-        $title = "homepage";
-        break;
+    if (!$stmt->execute($params)) {
+        $error = $stmt->errorInfo();
+        return false;
     }
 
-    case "detail": {
-        $data = $dish->selectRecipeOrMore($dish_id);
-        $template = 'detail.html.twig';
-        $title = "detail pagina";
-        break;
+    return true;
+}
+
+function getAverageRating($pdo, $itemId) {
+    $sql = "SELECT AVG(numberfield) AS average 
+            FROM dish_info 
+            WHERE record_type = :record_type AND dish_id = :dish_id";
+    $stmt = $pdo->prepare($sql);
+
+    $params = [
+        ':record_type' => 'R',
+        ':dish_id'     => $itemId
+    ];
+
+    if (!$stmt->execute($params)) {
+        $error = $stmt->errorInfo();
+        return null;
     }
 
-    case "grocery_list": {
-        $data = $dish->selectRecipeOrMore($dish_id);
-        $template = 'grocery.html.twig';
-        $title = "grocery pagina";
-        break;
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result['average'] ?? null;
+}
+
+function saveFavorite($pdo, $itemId) {
+    // Check if it's already a favorite
+    $sql_check = "SELECT COUNT(*) 
+                  FROM dish_info 
+                  WHERE record_type = :record_type AND dish_id = :dish_id";
+    $stmt_check = $pdo->prepare($sql_check);
+    
+    $params = [
+        ':record_type' => 'F',
+        ':dish_id'     => $itemId
+    ];
+
+    if (!$stmt_check->execute($params)) {
+        return ['success' => false, 'added' => false];
     }
 
-    case "rating_actions": {
-        // OPSLAAN VAN EEN RATING (VIA POST)
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $json_data = file_get_contents('php://input');
-            $data = json_decode($json_data, true);
+    $count = $stmt_check->fetchColumn();
 
-            // Controleer of de benodigde velden aanwezig zijn in de JSON data
-            if (isset($data['type']) && $data['type'] === 'rate' && isset($data['item_id']) && isset($data['rating'])) {
-                $itemId = (int)$data['item_id'];
-                $rating = (int)$data['rating'];
-                // Sla de rating op in de database
-                if (saveRating($connection, $itemId, $rating)) {
-                    $average = getAverageRating($connection, $itemId);
-                    echo json_encode(['success' => true, 'average' => $average]);
-                } else {
-                    echo json_encode(['success' => false, 'error' => 'Kon de rating niet opslaan.']);
-                }
-                exit();
-            } else {
-                http_response_code(400);
-                echo json_encode(['success' => false, 'error' => 'Ongeldige POST data.']);
-                exit();
-            }
-        }
+    if ($count > 0) {
+        // Already a favorite — remove it
+        $sql_delete = "DELETE 
+                       FROM dish_info 
+                       WHERE record_type = :record_type AND dish_id = :dish_id";
+        $stmt_delete = $pdo->prepare($sql_delete);
+        $result_delete = $stmt_delete->execute($params);
 
-        // GEMIDDELDE RATING (VIA GET)
-        if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['request_type']) && $_GET['request_type'] === 'average' && isset($_GET['item_id'])) {
-            $itemId = (int)$_GET['item_id'];
-            $average = getAverageRating($connection, $itemId);
+        return ['success' => $result_delete, 'added' => false];
+    } else {
+        // Not a favorite — add it
+        $sql_insert = "INSERT INTO dish_info (record_type, dish_id, date) 
+                       VALUES (:record_type, :dish_id, NOW())";
+        $stmt_insert = $pdo->prepare($sql_insert);
+        $result_insert = $stmt_insert->execute($params);
 
-            // Controleer of er een gemiddelde rating is gevonden
-            if ($average !== null) {
-                echo json_encode(['success' => true, 'average' => $average]);
-            } else {
-                echo json_encode(['success' => false, 'error' => 'Nog geen ratings voor dit item.']);
-            }
-            exit();
-        }
-
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'Ongeldige rating actie.']);
-        exit();
-        break;
-    }
-
-    case "favorites_actions": {
-        // OPSLAAN/VERWIJDEREN VAN FAVORIET (VIA POST)
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $json_data = file_get_contents('php://input');
-            $data = json_decode($json_data, true);
-
-            if (isset($data['type']) && $data['type'] === 'favorite' && isset($data['item_id'])) {
-                $itemId = (int)$data['item_id'];
-                $result = saveFavorite($connection, $itemId);
-                echo json_encode(['success' => $result['success'], 'added' => $result['added']]);
-                exit();
-            } else {
-                http_response_code(400);
-                echo json_encode(['success' => false, 'error' => 'Ongeldige POST data voor favorieten.']);
-                exit();
-            }
-        }
-
-        // CHECKEN OF GERECHT FAVORIET IS (VIA GET)
-        if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['request_type']) && $_GET['request_type'] === 'check' && isset($_GET['item_id'])) {
-            $itemId = (int)$_GET['item_id'];
-            $is_fav = isFavorite($connection, $itemId);
-            echo json_encode(['success' => true, 'is_favorite' => $is_fav ? 1 : 0]);
-            exit();
-        }
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'Ongeldige favorieten actie.']);
-        exit();
-        break;
-    }
-
-    case "search": {
-        $searchTerm = isset($_GET["query"]) ? $_GET["query"] : "";
-        if (!empty($searchTerm)) {
-            $data = $dish->searchDishesByIngredient($searchTerm);
-            $template = 'homepage.html.twig';
-            $title = "Search Results";
-        } else {
-            $data = $dish->selectRecipeOrMore();
-            $template = 'homepage.html.twig';
-            $title = "homepage";
-        }
-        break;
+        return ['success' => $result_insert, 'added' => true];
     }
 }
-// Alleen de pagina renderen als de actie niet 'rating_actions' of 'favorites_actions' is
-if ($action !== 'rating_actions' && $action !== 'favorites_actions') {
-    $template = $twig->load($template);
 
-    echo $template->render([
-        "title" => $title,
-        "data" => $data
-    ]);
+function isFavorite($pdo, $itemId) {
+    $sql = "SELECT COUNT(*) 
+            FROM dish_info 
+            WHERE record_type = :record_type AND dish_id = :dish_id";
+    $stmt = $pdo->prepare($sql);
+
+    $params = [
+        ':record_type' => 'F',
+        ':dish_id'     => $itemId
+    ];
+
+    if (!$stmt->execute($params)) {
+        $error = $stmt->errorInfo();
+        return false;
+    }
+
+    $count = $stmt->fetchColumn();
+    return $count > 0;
 }

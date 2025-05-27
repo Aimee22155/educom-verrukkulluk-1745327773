@@ -3,7 +3,6 @@
 require_once("./vendor/autoload.php");
 
 $loader = new \Twig\Loader\FilesystemLoader("./templates");
-
 $twig = new \Twig\Environment($loader, ["debug" => true ]);
 $twig->addExtension(new \Twig\Extension\DebugExtension());
 
@@ -16,64 +15,20 @@ $twig->addExtension(new \Twig\Extension\DebugExtension());
     require_once("lib/article.php");
     require_once("lib/kitchen_type.php");
     require_once("lib/user.php");
-   
+    require_once("JS_Functions.php");
+
 $db = new database();
 $connection = $db->getConnection();
 
 $dish = new Dishes($connection);
-
 // Lees de URL-parameters in
 $dish_id = isset($_GET["dish_id"]) ? $_GET["dish_id"] : "";
-
 // Bepaal de actie die moet worden uitgevoerd op basis van de 'action' parameter
 $action = isset($_GET["action"]) ? $_GET["action"] : "homepage";
-
 // Stel een default template in
 $template = 'homepage.html.twig';
 $title = "Verrukkulluk";
 
-// functions voor javascript
-function saveRating($mysqli, $itemId, $rating) {
-    $itemId = (int)$itemId;
-    $rating = (int)$rating;
-    $sql = "INSERT INTO dish_info (record_type, dish_id, user_id, date, numberfield) VALUES ('R', " . $itemId . ", NULL, NOW(), " . $rating . ")";
-    return $mysqli->query($sql);
-}
-
-function getAverageRating($mysqli, $itemId) {
-    $itemId = mysqli_real_escape_string($mysqli, $itemId);
-    $sql = "SELECT AVG(numberfield) AS average FROM dish_info WHERE record_type = 'R' AND dish_id = '" . $itemId . "'";
-    $result = $mysqli->query($sql);
-    $row = $result->fetch_assoc();
-    return $row['average'];
-}
-
-function saveFavorite($mysqli, $itemId) {
-    $itemId = mysqli_real_escape_string($mysqli, $itemId);
-
-    $sql_check = "SELECT COUNT(*) FROM dish_info WHERE record_type = 'F' AND dish_id = '" . $itemId . "'";
-    $result_check = $mysqli->query($sql_check);
-    $row_check = $result_check->fetch_row();
-
-    if ($row_check[0] > 0) {
-        $sql_delete = "DELETE FROM dish_info WHERE record_type = 'F' AND dish_id = '" . $itemId . "'";
-        $result_delete = $mysqli->query($sql_delete);
-        return ['success' => $result_delete, 'added' => false];
-    } else {
-        $sql_insert = "INSERT INTO dish_info (record_type, dish_id, date) VALUES ('F', '" . $itemId . "', NOW())";
-        $result_insert = $mysqli->query($sql_insert);
-        return ['success' => $result_insert, 'added' => true];
-    }
-}
-
-function isFavorite($mysqli, $itemId) {
-    $itemId = mysqli_real_escape_string($mysqli, $itemId);
-
-    $sql = "SELECT COUNT(*) FROM dish_info WHERE record_type = 'F' AND dish_id = '" . $itemId . "'";
-    $result = $mysqli->query($sql);
-    $row = $result->fetch_row();
-    return $row[0] > 0;
-}
 
 // Switch statement bepaalt welke pagina er wordt geladen op basis van 'action'
 switch($action) {
@@ -161,7 +116,7 @@ switch($action) {
                 exit();
             }
         }
-        
+
         // CHECKEN OF GERECHT FAVORIET IS (VIA GET)
         if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['request_type']) && $_GET['request_type'] === 'check' && isset($_GET['item_id'])) {
             $itemId = (int)$_GET['item_id'];
@@ -189,8 +144,8 @@ switch($action) {
         break;
     }
 }
-// Alleen de pagina renderen als de actie niet 'rating_actions' is
-if ($action !== 'rating_actions') {
+// Alleen de pagina renderen als de actie niet 'rating_actions' of 'favorites_actions' is
+if ($action !== 'rating_actions' && $action !== 'favorites_actions') {
     $template = $twig->load($template);
 
     echo $template->render([
