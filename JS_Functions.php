@@ -1,101 +1,101 @@
 <?php
 
-// functions voor javascript
-function saveRating($pdo, $itemId, $rating) {
-    $sql = "INSERT INTO dish_info 
-            (record_type, dish_id, user_id, date, numberfield) 
-            VALUES (:record_type, :dish_id, :user_id, NOW(), :numberfield)";
-    $stmt = $pdo->prepare($sql);
-
-    $params = [
-        ':record_type' => 'R',
-        ':dish_id'     => $itemId,
-        ':user_id'     => null,
-        ':numberfield' => $rating
-    ];
-
-    if (!$stmt->execute($params)) {
-        $error = $stmt->errorInfo();
+function saveRating($mysqli, $itemId, $rating) {
+    // user_id is NULL, dus direct NULL in de query
+    $sql = "INSERT INTO dish_info (record_type, dish_id, user_id, date, numberfield) VALUES (?, ?, NULL, NOW(), ?)";
+    $stmt = $mysqli->prepare($sql);
+    if (!$stmt) {
         return false;
     }
 
+    $record_type = 'R'; 
+    // bind_param types: s = string, i = integer
+    $stmt->bind_param('sis', $record_type, $itemId, $rating);
+
+    if (!$stmt->execute()) {
+        return false;
+    }
     return true;
 }
 
-function getAverageRating($pdo, $itemId) {
+function getAverageRating($mysqli, $itemId) {
     $sql = "SELECT AVG(numberfield) AS average 
             FROM dish_info 
-            WHERE record_type = :record_type AND dish_id = :dish_id";
-    $stmt = $pdo->prepare($sql);
-
-    $params = [
-        ':record_type' => 'R',
-        ':dish_id'     => $itemId
-    ];
-
-    if (!$stmt->execute($params)) {
-        $error = $stmt->errorInfo();
+            WHERE record_type = ? AND dish_id = ?";
+    $stmt = $mysqli->prepare($sql);
+    if (!$stmt) {
         return null;
     }
 
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $record_type = 'R';
+    $stmt->bind_param('si', $record_type, $itemId);
+
+    if (!$stmt->execute()) {
+        return null;
+    }
+
+    $result = $stmt->get_result()->fetch_assoc();
     return $result['average'] ?? null;
 }
 
-function saveFavorite($pdo, $itemId) {
-    // Check if it's already a favorite
-    $sql_check = "SELECT COUNT(*) 
-                  FROM dish_info 
-                  WHERE record_type = :record_type AND dish_id = :dish_id";
-    $stmt_check = $pdo->prepare($sql_check);
-    
-    $params = [
-        ':record_type' => 'F',
-        ':dish_id'     => $itemId
-    ];
-
-    if (!$stmt_check->execute($params)) {
+function saveFavorite($mysqli, $itemId) {
+    // Check of favoriet al bestaat
+    $sql_check = "SELECT COUNT(*) AS count FROM dish_info WHERE record_type = ? AND dish_id = ?";
+    $stmt_check = $mysqli->prepare($sql_check);
+    if (!$stmt_check) {
         return ['success' => false, 'added' => false];
     }
 
-    $count = $stmt_check->fetchColumn();
+    $record_type = 'F';
+    $stmt_check->bind_param('si', $record_type, $itemId);
+
+    if (!$stmt_check->execute()) {
+        return ['success' => false, 'added' => false];
+    }
+
+    $result = $stmt_check->get_result()->fetch_assoc();
+    $count = $result['count'] ?? 0;
 
     if ($count > 0) {
-        // Already a favorite — remove it
-        $sql_delete = "DELETE 
-                       FROM dish_info 
-                       WHERE record_type = :record_type AND dish_id = :dish_id";
-        $stmt_delete = $pdo->prepare($sql_delete);
-        $result_delete = $stmt_delete->execute($params);
+        // Favoriet verwijderen
+        $sql_delete = "DELETE FROM dish_info WHERE record_type = ? AND dish_id = ?";
+        $stmt_delete = $mysqli->prepare($sql_delete);
+        if (!$stmt_delete) {
+            return ['success' => false, 'added' => false];
+        }
+        $stmt_delete->bind_param('si', $record_type, $itemId);
+        $success = $stmt_delete->execute();
 
-        return ['success' => $result_delete, 'added' => false];
+        return ['success' => $success, 'added' => false];
     } else {
-        // Not a favorite — add it
-        $sql_insert = "INSERT INTO dish_info (record_type, dish_id, date) 
-                       VALUES (:record_type, :dish_id, NOW())";
-        $stmt_insert = $pdo->prepare($sql_insert);
-        $result_insert = $stmt_insert->execute($params);
+        // Favoriet toevoegen
+        $sql_insert = "INSERT INTO dish_info (record_type, dish_id, date) VALUES (?, ?, NOW())";
+        $stmt_insert = $mysqli->prepare($sql_insert);
+        if (!$stmt_insert) {
+            return ['success' => false, 'added' => false];
+        }
+        $stmt_insert->bind_param('si', $record_type, $itemId);
+        $success = $stmt_insert->execute();
 
-        return ['success' => $result_insert, 'added' => true];
+        return ['success' => $success, 'added' => true];
     }
 }
 
-function isFavorite($pdo, $itemId) {
-    $sql = "SELECT COUNT(*) 
-            FROM dish_info 
-            WHERE record_type = :record_type AND dish_id = :dish_id";
-    $stmt = $pdo->prepare($sql);
-
-    $params = [
-        ':record_type' => 'F',
-        ':dish_id'     => $itemId
-    ];
-
-    if (!$stmt->execute($params)) {
-        $error = $stmt->errorInfo();
+function isFavorite($mysqli, $itemId) {
+    $sql = "SELECT COUNT(*) AS count FROM dish_info WHERE record_type = ? AND dish_id = ?";
+    $stmt = $mysqli->prepare($sql);
+    if (!$stmt) {
         return false;
     }
 
-    $count = $stmt->fetchColumn();
+    $record_type = 'F';
+    $stmt->bind_param('si', $record_type, $itemId);
+
+    if (!$stmt->execute()) {
+        return false;
+    }
+
+    $result = $stmt->get_result()->fetch_assoc();
+    $count = $result['count'] ?? 0;
     return $count > 0;
 }
