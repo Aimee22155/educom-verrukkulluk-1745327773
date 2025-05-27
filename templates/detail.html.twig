@@ -173,8 +173,9 @@
                         if (data.success) {
                             const ratingGiven = parseInt(clickedStar.data('value'));
                             // laad gemiddelde voor invulling sterren
-                            fetchAverageRating();
+                            fillStars(ratingGiven);
                             ratingMessage.text(`Je hebt ${ratingGiven} ster(ren) gegeven. Bedankt!`);
+
                             setTimeout(function() {
                                 ratingMessage.text('');
                             }, 3000);
