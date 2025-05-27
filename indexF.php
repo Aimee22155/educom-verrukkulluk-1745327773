@@ -15,7 +15,7 @@ $twig->addExtension(new \Twig\Extension\DebugExtension());
     require_once("lib/article.php");
     require_once("lib/kitchen_type.php");
     require_once("lib/user.php");
-    // require_once("JS_Functions.php");
+    require_once("JS_Functions.php");
 
 $db = new database();
 $connection = $db->getConnection();
@@ -28,6 +28,7 @@ $action = isset($_GET["action"]) ? $_GET["action"] : "homepage";
 // Stel een default template in
 $template = 'homepage.html.twig';
 $title = "Verrukkulluk";
+
 
 // Switch statement bepaalt welke pagina er wordt geladen op basis van 'action'
 switch($action) {
