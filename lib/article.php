@@ -13,7 +13,7 @@ class Article {
     }
   
     public function selectArticle($article_id) {
-        $sql = "select * from article where id = $article_id";
+        $sql = "SELECT * FROM article WHERE id = $article_id";
         $result = mysqli_query($this->connection, $sql);
         $article = mysqli_fetch_array($result, MYSQLI_ASSOC); //mysqli_assoc --> kolomnamen
         

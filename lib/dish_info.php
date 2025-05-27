@@ -70,8 +70,8 @@ class DishInfo {
             
     // Verwijder een favoriet
     public function deleteFavorite($dish_id, $user_id, $date) {
-        $sql = "delete from dish_info 
-                where record_type = 'F' and dish_id = $dish_id and user_id = $user_id and date = $date";
+        $sql = "DELETE FROM dish_info 
+                WHERE record_type = 'F' AND dish_id = $dish_id AND user_id = $user_id AND date = $date";
         $result = mysqli_query($this->connection, $sql);
 
         return $result;
@@ -83,10 +83,10 @@ class DishInfo {
         $this->deleteFavorite($dish_id, $user_id, $date);
 
         // Voeg favoriet toe
-        $sql = "insert into dish_info (record_type, dish_id, user_id, date) 
-                values ('F', $dish_id, $user_id, $date)";
+        $sql = "INSERT INTO dish_info (record_type, dish_id, user_id, date) 
+                VALUES ('F', $dish_id, $user_id, $date)";
         $result = mysqli_query($this->connection, $sql);
-
+        
         return $result;
     }  
     

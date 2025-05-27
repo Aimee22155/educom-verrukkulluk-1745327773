@@ -18,7 +18,7 @@ class Ingredient {
 
     public function selectIngredient($dish_id) {
         //selecteer alle ingredientvelden die behoren tot een specifiek gerecht.
-        $sql = "select * from ingredient where dish_id = $dish_id";
+        $sql = "SELECT * FROM ingredient WHERE dish_id = $dish_id";
         $result = mysqli_query($this->connection, $sql);
         // lege aray voor tegen foutmelding null waarden.
         $Ingredient=[];
